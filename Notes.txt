@@ -1,0 +1,6 @@
+Github üzerinden projeyi geliştireceğiz.
+
+1.cmd ekranından projenin olduğu yere git ve -> git init  -> Boş bir reository oluşturur.
+
+-> Bir spring projesini oluşturmanın birçok yolu olabilir.
+Normalde biz spring.io üzerinden projeyi generate ediyorduk.
