@@ -1,6 +1,62 @@
 Github üzerinden projeyi geliştireceğiz.
 
 1.cmd ekranından projenin olduğu yere git ve -> git init  -> Boş bir reository oluşturur.
+2.gh repo create  ->
+
+Not: ->Cmd ve bash ekranlarında "clear" konsolu temizler.
 
 -> Bir spring projesini oluşturmanın birçok yolu olabilir.
 Normalde biz spring.io üzerinden projeyi generate ediyorduk.
+Diğer yol ise springin kendi cli üzerinde.Otomasyon alanında çok kullanılıyor.Proje yaratmayı otomasyona bindiriyorsak ve mesela microservislerimizi her seferinde yeniden yaratıyorsak  kulanışlı olabilir.
+Spring cli indirmek gerekebilir. -> https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started.installing.java
+İndirilen dosyanın bin uzantısını -> C:\Spring CLI\spring-2.6.3\bin , bu pathi enviroment variables içinde ki Path alanının sonuna ekle.Cli indirilmiş olur.
+
+
+Spring cli bilgileri:
+
+-->spring init -list  -> Genel paramerrik değerleri bağımlılıkları  için bilgiler bulunur.
+->spring init -> bir proje oluşturur.Default
+-> spring init --build=gradle --dependencies=web,data-jpa,mysql youcontribute.zip   -> buildi gradle olan ve dependencileri web,data-jpa ve mysql(driver için) olan ve youcontribute zip adını vererek, içinde oluşturmak istediğimizi belittik.
+-> Ardından youcontribute.zip dosyası ilgili dizinde oluşacak.Bunu unzip edelim.-> unzip youcontribute.zip 
+->Ardından da zip dosyasını silebiliriz.-> rm youcontribute.zip 
+->Intellija IDEA da open project diyerek -> Projedeki buid.gradle seçilir.Ve Open as Project seçilir.
+
+Gradle Not:
+->Gradle ile bağımlılıklarımız yönetilebilir olacak.Projeyi konfigure etmemizi sağlayacak.
+Gradle için de bir wrapper dosyası var.Bu dosyanın içinde properties ve jar dosyası var.gradle-wrapper.properties,gradle-wrapper.jar dosyaları.Bu dosyalar eğer lokalinde gradle olmasa dahi gradle kurululumunu kendi yapar.
+
+Intellij IDEA not:
+Pluggin-> Presentation Assistant = Kısayolları daha rahat kullanmamızı sağlayan bir plugin
+IDEA da double  shift(iki defa shift ) tuşuna basarsak  ,  istediğimiz şeyi aratabiliriz.
+Örnek vermek istersek elimizde bir kod blogu var ve bunu yorum satırına almak istiyoruz.Kodu seçip double shift dersek , gelen aramada da comment diye aratırsak direk bize yardımcı olur.
+Yani kısa yolları hatırlamadığımızda double shift bize yardımcı olacaktır.
+->Shift+F6 -> Refactor
+->Projeyi IDE üzerinden de çalıştırabiliriz.
+
+Console üzerinden çalıştırmak için.--> ./gradlew bootRun 
+(Burada fail alabilir.Çünkü dependecyleri bazı configlerini de ayağa kaldırmalıyız.Mesela ben mysql kullandım ama herhangi bir config,url vs tanımlamadım."Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.")
+Bunu docker ile çözelim.
+
+Ardında
+->  docker run --name some-mysql  -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=youcontribute -d mysql:5.7 -> youcontribute adından database i olan bir mysql image ayağa kaldıracak.
+  
+
+
+Spring boot , build.gradle dosyasındaki configlerle çalışır ve o şekilde tanır.(pom gibi)
+
+->Mesela lombock u projeye import etmek istiyoruz.Öncelikle build.gradle dosyasına dependecy'i ekleyeceğiz.Ardından Intellije Idea da   compiler->Annotation->Enable >Annotation Processing
+-> https://projectlombok.org/setup/gradle  -> lombock dependecy
+
+Projede application.yaml formatını kullanacağız.Ve değişkenleri dinamik yapacağız.
+
+
+--> Normal de application.properties içerisine eklediğimiz alanları Edit-Configuration->Enviroment Variables içerisine de ekleyerek yapabiliriz.
+
+Console üzerinden çalıştırmak için.--> ./gradlew bootRun  -> bash kullan.
+
+
+curl -XPOST -H  'Content-Type: application/json'  -d '{}' http://localhost:8080/repositories   --> Cmd ekranondan ilgili pathe bağlanma ve request atma->Post isteği
+
+
+
+
