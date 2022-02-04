@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class CreateRepositoryRequest {
 
-    private  String url;
+    private String organization;
+    private  String repository;
 
 }

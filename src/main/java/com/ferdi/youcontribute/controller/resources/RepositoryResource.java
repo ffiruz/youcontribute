@@ -17,8 +17,8 @@ public class RepositoryResource {
     public static RepositoryResource createFor(Repository repository) //Model to Dto
     {
         return RepositoryResource.builder()
-                .name("")
-                .organization("")
+                .name(repository.getRepository())
+                .organization(repository.getOrganization())
                 .build();
     }
 

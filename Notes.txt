@@ -58,5 +58,6 @@ Console üzerinden çalıştırmak için.--> ./gradlew bootRun  -> bash kullan.
 curl -XPOST -H  'Content-Type: application/json'  -d '{}' http://localhost:8080/repositories   --> Cmd ekranondan ilgili pathe bağlanma ve request atma->Post isteği
 
 
+curl -XPOST -H "Content-Type: application/json"  -d  '{"repository":"test","organization":"test2"}'  http://localhost:8080/repositories
 
 

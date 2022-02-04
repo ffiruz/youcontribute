@@ -50,7 +50,7 @@ public class RepositoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody CreateRepositoryRequest request)
     {
-        this.repositoryService.create(request.getUrl());
+        this.repositoryService.create(request.getOrganization(),request.getOrganization());
 
     }
 
@@ -63,3 +63,12 @@ public class RepositoryController {
 
 
 }
+
+/*
+Genel senaryo:
+
+Githubdan repository import edecek.
+Bir schedule job olacak.Ve issueları analiz edecek.
+Ardından bize bir issue gösterecek.Günlük olrak.
+Sen bu isuue yu onaylarsa sana atanıyor.
+ */
