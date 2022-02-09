@@ -57,7 +57,72 @@ Console üzerinden çalıştırmak için.--> ./gradlew bootRun  -> bash kullan.
 
 curl -XPOST -H  'Content-Type: application/json'  -d '{}' http://localhost:8080/repositories   --> Cmd ekranondan ilgili pathe bağlanma ve request atma->Post isteği
 
-
 curl -XPOST -H "Content-Type: application/json"  -d  '{"repository":"test","organization":"test2"}'  http://localhost:8080/repositories
+
+
+Spring Boot Actuator-> Metrik sağlar.
+Quartz Scheduler->Cron job sağlar.
+
+
+UNIT TEST
+
+->Projeyi Spring cli veya spring.io dan indirdiğimizde bize bir test classı sağlar.Ve contextLoad adından bir test metodu sağlar.
+
+ContextLoad içerisine bağımlılıklarımızı koyarız.Bu bağımlılıklar servisler vs.Bu contextLoad testleri , bu bağımlılıkların düzgün şekilde kurulup kurulmadığını test etmemizi sağlıyor.
+
+--> test packageının altına kendi resources klasörümüzü koyup , Application.properties veya yaml dosyasını oluşturabiliriz.Böylece normalde ki Application.properties(proda çıkan) dosyasından ayırmış oluruz.
+Böylece kendi testlerimiz için H2 database vs .kolay entegre olabilen bir db configlerini yazabiliriz. (H2->Dependenciysini build.gradle ekle.)
+
+Controller testi.  -> Controller classının üztüne ctrk+shift+t ile direk (veya go to seçeneğindne) test classına gidebiliriz veya oluşturabiliriz.Package vs düzenlememize gerek yok.Düzgün oluşturacaktır.
+JUNIT 4 de @SpringRunnerWithTest vs yazıyorduk.Ancak JUNIT 5 ile birçok özellik geldi.@ExtendWith anatasyonunu class başına yazıyoruz.
+  
+
+Repository Test --> Integration tesi.Integration testlerin sonunda IT eklenir genelde.
+
+
+Github --> base Url : https://api.github.com/  ->Postmen içerisinde Enviroment da key value olarak set edebiliriz.
+key:github_base , value: https://api.github.com/  -> ulaşmak içi: {{github_base}} kullanabiliriz.
+
+
+-> Http protokolleri
+PATCH -> partial update(kısimi güncelleme):Bir product objemiz (table) olsun.Ve bunun üzerinden kaç defa bakıldığına dair bir data tutuyoruz.Mesela sayfaya bir ziyaret olduğunda product'ın bütün datasının değiştirilmesi yerine , ilgili fieldı güncelleme.
+PUT->Hangi fieldın değiştiği ile ilgilenmiyoruz.Çünkü elimiz de objenin son hali var.PUT ile db de ki datayı komple güncelleme.
+
+
+
+Dış Entegrasyon hk.
+
+Eğer projemizde dış bir client'a (entegrasyona) bağlanılırken ,  davranışı singleton mı olmalı veya birden fazla new ile oluşturmalımıyım.Sibngleton ise bir bean ile bunu tanımlamalıyız.
+
+Github client için dependecy: https://mvnrepository.com/artifact/org.eclipse.mylyn.github/org.eclipse.egit.github.core
+
+Spring de bean tanımlamaları vs config aslı bir paket oluşturularak , paketin içerisinde yapılması kararlılık katar.
+
+-> Confidental (gizi) dataları proje içerisine yazmamız gerekir.(application.properites vs. içerisine).Bunun yerine ${} şeklinde (projede ki token tanımı gibi) ortam değişkeni kullanabiliriz.
+
+-->Java memory management konusuda çok güçlü bir dildir.
+
+
+-->Spring IOC
+
+Bean tanımı:
+
+    //sistem ayağa kalktığı zmaan , sistemde sadece bir tane github clientının yaşıyor olması.
+    @Bean
+    public GitHubClient   gitHubClient(final GithubProperties githubProperties)
+//Sprinngin Contexine kaydediyoruz.Ve istediğimiz yerden GithubClientı çağırıp kullanabileceğiz.(Mesela GithubClientService)
+    {
+        GitHubClient gitHubClient= new GitHubClient();
+        gitHubClient.setOAuth2Token(githubProperties.getToken());
+        return  gitHubClient;
+    }
+
+
+
+-->JSON Objesini ,Pojo ya çeviren site-> https://json2csharp.com/json-to-pojo
+
+
+->Intellije IDEA da String manipulation diye bir plugin var.Ve bu plugin , değişkenleri camel case yapısına çevirmede ve birçok özellik konusunda bize yardımcı oluyor.
+
 
 
