@@ -50,7 +50,7 @@ public class RepositoryController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody CreateRepositoryRequest request)
     {
-        this.repositoryService.create(request.getOrganization(),request.getOrganization());
+        this.repositoryService.create(request.getRepository(),request.getOrganization());
 
     }
 

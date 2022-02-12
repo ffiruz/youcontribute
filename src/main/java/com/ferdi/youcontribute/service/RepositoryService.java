@@ -11,13 +11,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class RepositoryService {
+public class RepositoryService {  //Eğer ben bu servis içerisinde ki bir transacitonal metdou çağırdığımda , scope buradan başlar.
 
     private final RepositoryRepository repositoryRepository;
 
-    @Transactional  //for save operation
-    public void create(String reposiroy,String organization) {
-        Repository r = Repository.builder().repository(reposiroy).organization(organization).build();
+    @Transactional
+    //for save operation->Aynı kayda biren fazla kişi erişiyorsa , datanın belli strajiler ile kayıt edilirken,  kitlenmesi lazım.Çünkü Race Condition problemi ortaya çıkabilir.
+    //Düzgün transacitonal yapılmazsa data kirliliğine sebep olabilir.
+    public void create(String repository,String organization) {
+        Repository r = Repository.builder().repository(repository).organization(organization).build();
         repositoryRepository.save(r);
     }
 

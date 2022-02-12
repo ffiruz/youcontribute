@@ -125,4 +125,35 @@ Bean tanımı:
 ->Intellije IDEA da String manipulation diye bir plugin var.Ve bu plugin , değişkenleri camel case yapısına çevirmede ve birçok özellik konusunda bize yardımcı oluyor.
 
 
+->Konsole üzerinden database e bağlanma.
+
+docker ps -> image ları listeler.
+docker exec -it 3d084248d898  sh  ->Container ın içine gireriz. Burada 3d084248d898-> mysql image id.Bu şekilde herhangi bir image ın içine girebilriiz(image ıd verereek)
+
+mysql -u root -p  -> "root" username adlı mysql connectionına bağlanıyoruz.
+
+password:my-secret-pw  ->şifreyi giriyoruz. Artık mysql içerisindeyiz.
+
+show databases; -> databaseleri gösterir.
+
+use youcontribute; -> youcontribute datatable ını kullanmak istediğimizi söylüyoruz.
+
+show tables; -> tabloları listeler.  (Bizim tablolar-> issue, ve repository)
+
+describe issue;  -> issue tablosunu bize gösterir.Hangi alanlar var.Hangi tipde vs.
+
+select * from repository; -> select vs yazabiliriz.
+
+
+-->Spring Scheduler kavaramı
+
+
+
+
+
+
+
+
+
+
 

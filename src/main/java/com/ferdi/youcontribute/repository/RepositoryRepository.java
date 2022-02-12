@@ -13,6 +13,7 @@ public interface RepositoryRepository  extends PagingAndSortingRepository<Reposi
 
 
     //Biz burada named queryler de yazabiliriz.Named query de metod adlandırmasına göre otomotik olrak sql querysine çevirebiliyor.
+    // Bunu JPA yapıyor.Ve hangi db is(oracle,mysql,db2 vs.) bunun query yapısına kendi karar veriyor.
     //Mesela organizationa göre arama yapalım
   //  public Repository findByRepository(String organization);
     //Mesela Sıralayalım

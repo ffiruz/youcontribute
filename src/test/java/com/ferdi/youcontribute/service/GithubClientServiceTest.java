@@ -18,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -44,8 +46,10 @@ public  class GithubClientServiceTest {
 
         //given
         //__files/github/issues.json içerisinde ," {{gıthub_base}}/repos/octocat/Hello-World/issues" endpointinden dönen datayı kopyaladık.
+        //Github'ın api sine gitmeden , sanki gidiyormuşuz gibi , test yapıyoruz.
         // Sanki postmanden bu datayı almışız gibi.->Burada "__files" wiremockun özel tanıdığı bir path .Bu nedenle ,withBodyFile("/github/issues.json") şeklidne kullabiliriz.
         wireMockServer.stubFor(get(urlPathEqualTo("/repos/octocat/Hello-World/issues")) //mockladık.
+                        .withQueryParam("since",equalTo("2022-02-10"))
                         .withHeader("Authorization",equalTo("token tokenTest")) //token set ettik.
                 .willReturn(aResponse().withBodyFile("/github/issues.json") //_files/github/issues.json içerisinde ki data dönecek.
                 .withHeader("Content_Type", MediaType.APPLICATION_JSON_VALUE).withStatus(200)));
@@ -54,7 +58,7 @@ public  class GithubClientServiceTest {
 
         //when
 
-        GithubIssueResponse[] response= this.githubClient.listIssues("octocat","Hello-World");
+        GithubIssueResponse[] response= this.githubClient.listIssues("octocat","Hello-World", LocalDate.parse("2022-02-10"));
 
 
         //then
@@ -90,7 +94,7 @@ public  class GithubClientServiceTest {
                     ,"github.token=tokenTest")
                     .applyTo(applicationContext.getEnvironment());
 
-            //Sistem ayağa  kalkarken application.properties dosyasına müdahale ettik.github.apiurl ve githun.token değerlerini verdik.
+            //Sistem ayağa  kalkarken application.properties dosyasına müdahale ettik.github.apiurl ve githun.token değerlerine test için yeni değerler verdik.
 
 
         }
