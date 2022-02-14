@@ -22,7 +22,7 @@ public class GithubIssueResponse {
     public String htmlUrl;
     public int id;
     public String nodeId;
-    public int number;
+    public long number;
     public String title;
     public User user;
     public ArrayList<Label> labels;
@@ -87,7 +87,7 @@ public class GithubIssueResponse {
         public boolean siteAdmin;
     }
     public  static  class Label {
-        public int id;
+        public long id;
         public String nodeId;
         public String url;
         public String name;

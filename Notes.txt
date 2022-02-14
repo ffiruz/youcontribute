@@ -103,20 +103,6 @@ Spring de bean tanımlamaları vs config aslı bir paket oluşturularak , paketi
 -->Java memory management konusuda çok güçlü bir dildir.
 
 
--->Spring IOC
-
-Bean tanımı:
-
-    //sistem ayağa kalktığı zmaan , sistemde sadece bir tane github clientının yaşıyor olması.
-    @Bean
-    public GitHubClient   gitHubClient(final GithubProperties githubProperties)
-//Sprinngin Contexine kaydediyoruz.Ve istediğimiz yerden GithubClientı çağırıp kullanabileceğiz.(Mesela GithubClientService)
-    {
-        GitHubClient gitHubClient= new GitHubClient();
-        gitHubClient.setOAuth2Token(githubProperties.getToken());
-        return  gitHubClient;
-    }
-
 
 
 -->JSON Objesini ,Pojo ya çeviren site-> https://json2csharp.com/json-to-pojo
@@ -145,7 +131,57 @@ describe issue;  -> issue tablosunu bize gösterir.Hangi alanlar var.Hangi tipde
 select * from repository; -> select vs yazabiliriz.
 
 
--->Spring Scheduler kavaramı
+Alt+F7 -> Metodun veya classın proje de çağrıldığı yerleri bulur.
+
+Angular 
+
+1.Angular (atası Angular js) ilk çıktığı zaman (diğer ui frameworkler de sonradan çıktı->Vue,React)
+Dependecy Injection,Component,Testable application özellikleri önemli idi.
+
+angular kurulumu-> npm install -g @angular/cli  (npm kurulu olması gerekir.)->Burada ki g -> global olarak bağımlılıkları ekle.Proje bazlı değil
+ng ->available commandleri listeler.
+ng new youcontribute-ui->"youcontribute-ui" adında yeni bir proje oluşturur.
+Consoldan code . -> Projeyi bize açar.
+ng serve -> uygulamayı ayağa kaldırır.
+npm projelerin de bağımlılıklar package.json dosyasında yönetilir.Burada depencies altında kiler prodda , nondependecies dekiler dev ortamında.
+package-lock.json->Projede kulllandığın librarleri versiyonlarını yönettiğimiz yer.
+node_modules -> Java da ki .m2 klasörüne denk geliyor.
+
+html projesi nasıl ayağa kaldırılır ?
+
+Yazdığımız javascript (veya typescript) dosyalarını , bir web server üzerinde ayağa kaldırıyor.(node js)
+
+-> twitter boostrap üzerinden bir template alacağız. -> https://getbootstrap.com/docs/5.1/examples/
+
+-> twitter bootsrap dependency ->  ng add @ng-bootstrap/ng-bootstrap  (projenin olduğu dizine) 
+-> cdn den de çekebiliriz." 
+ <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">"->http protokolüne yazmaya gerek yok.Böylece hangi protokolse onu çejecek.
+Yukarıdaki cnd i index.html içerisine ekleriz.
+twitter bootsrap da grid sistemi var.Sayfayı kolonlara bölmek.
+
+->ng add @fortawesome/angular-fontawesome : font ekleme  ve simge eklemek için kullanılır.
+
+
+Bir component oluşturalım.-> ng g c home  : home adından bir component dosyası oluşturuyoruz.(gitbash:proje dizini)
+
+Bir service generate edelim-> ng g s services/repository  -> rest api ye sorgu atacak kısım burada olacak.
+
+Payload vs test etmek için kullanılan site -> https://webhook.site/48c6a52f-e870-4fce-890e-38cfe39c8263  .UI tarafınfan bir istek attığımzıda bu sitedeki belittiğimzi api ya düşer ve rahatça test edebiliriz.
+
+
+
+
+
+port kill :
+
+netstat -ano | findstr :3306
+tskill 7484
+
+
+
+
+
+
 
 
 

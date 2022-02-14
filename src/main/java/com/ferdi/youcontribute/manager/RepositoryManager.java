@@ -34,24 +34,24 @@ public class RepositoryManager {
 
     private final GithubClient githubClient;
 
-    public void importRepository(String organization,String repository)
-    {
-        repositoryService.create(repository,organization);
+    public void importRepository(String organization, String repository) {
+        repositoryService.create(repository, organization);
     }
 
     //issue ları import ederken , Async(asink) yapıyı kullanacağız.
 
     @Async
-    public void importIssues(Repository repository)
-    {
+    public void importIssues(Repository repository) {
         //Bu job çalışırken bir önceki günün issue larını almaya çalışacağız.Böylece dünden itibaren açılan issuelar ile sadece logic oalcak.
         //Instant bir anı, zaman çizgisindeki belirli bir noktayı temsil eder. · LocalDateTime tarih ve günün saatini temsil eder.
 
-        LocalDate sinceYesterday= LocalDate.now().minus(1,ChronoUnit.DAYS);
-      //  LocalDate sinceDate =  LocalDate.ofInstant Instant.now().minus(1, ChronoUnit.DAYS)
+        LocalDate sinceYesterday = LocalDate.now().minus(1, ChronoUnit.DAYS);
+        //  LocalDate sinceDate =  LocalDate.ofInstant Instant.now().minus(1, ChronoUnit.DAYS)
 
-        GithubIssueResponse[] githubIssuesResponses=this.githubClient.listIssues(repository.getOrganization(),repository.getRepository(),sinceYesterday);
-        List<Issue> issues=Arrays.stream(githubIssuesResponses).map(githubIssue->new Issue())
+        GithubIssueResponse[] githubIssuesResponses = this.githubClient.listIssues(repository.getOrganization(),
+                repository.getRepository(), sinceYesterday);
+        List<Issue> issues = Arrays.stream(githubIssuesResponses).map(githubIssue -> Issue.builder().
+                        title(githubIssue.getTitle()).body(githubIssue.getBody()).build())
                 .collect(Collectors.toList());
         this.issueService.saveAll(issues);
 

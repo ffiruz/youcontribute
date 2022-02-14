@@ -19,10 +19,12 @@ public class ImportIssueScheduler {
 
     private final RepositoryService repositoryService;
 
-    @Scheduled(fixedRateString  = "${application.importfrequency}",initialDelay = 6000)//initialDelay ->uygulama ilk ayağa kalktığından , ne kadar süre sonra çalışcağını verebiliriz.(60 saniye)
+    @Scheduled(fixedRateString  = "${application.importfrequency}",initialDelay = 6000)
+    //initialDelay ->uygulama ilk ayağa kalktığından , ne kadar süre sonra bu metodun çalışcağını parametre olarak  verebiliriz.(60 saniye)
+    //60 daniye de bir burası tekara çalışacak.->application.importfrequency
   public void importIssueScheduler()
     {
-        //db den tüm repositoryi çekeceğiz.Ardından importIssue metodu ile db ye kaydedeceğiz.
+        //db den tüm repositoryi çekeceğiz.Ardından importIssue metodu ile db ye Issue tablosuna kaydedeceğiz.
         log.info("Import scheduler started");
         List<Repository> listRepository=repositoryService.list();
         listRepository.forEach(repositoryManager::importIssues);

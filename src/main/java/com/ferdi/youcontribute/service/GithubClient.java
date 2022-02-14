@@ -28,7 +28,7 @@ public class GithubClient { //client oluşturacağız
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization","token "+githubProperties.getToken());
+        headers.add("Authorization","token "+githubProperties.getToken().trim());
         HttpEntity request= new HttpEntity(headers);
          String issueUrl=String.format("%s/repos/%s/%s/issues?since=%s",this.githubProperties.getApiUrl(),owner,repository,since.toString());     //-->BaseUrl/repos/vmg/redcarpet/issues?since=date ->BaeUrl:application.propertys içinden set edilecek.
         //%s ile belirttiğimiz parametre de dinamik olarak gelecek alanlarımız.
