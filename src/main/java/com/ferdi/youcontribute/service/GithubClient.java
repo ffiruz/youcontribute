@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
@@ -28,13 +29,12 @@ public class GithubClient { //client oluşturacağız
         restTemplate.getMessageConverters().add(mappingJackson2HttpMessageConverter);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization","token "+githubProperties.getToken().trim());
+        headers.add("Authorization","token "+githubProperties.getToken().trim());  //Enviroment variables da -> githubProperties.getToken() set edildi.
         HttpEntity request= new HttpEntity(headers);
          String issueUrl=String.format("%s/repos/%s/%s/issues?since=%s",this.githubProperties.getApiUrl(),owner,repository,since.toString());     //-->BaseUrl/repos/vmg/redcarpet/issues?since=date ->BaeUrl:application.propertys içinden set edilecek.
         //%s ile belirttiğimiz parametre de dinamik olarak gelecek alanlarımız.
         ResponseEntity<GithubIssueResponse[]> response=this.restTemplate.exchange(issueUrl, HttpMethod.GET,request, GithubIssueResponse[].class); //issueUrl e , GET isteği at.Requesti de gönder.Response tipini belirt.
         return response.getBody();
-
     }
 
 

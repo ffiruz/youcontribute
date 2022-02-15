@@ -5,11 +5,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @org.springframework.stereotype.Repository
 public interface RepositoryRepository  extends PagingAndSortingRepository<Repository,Integer> {
 
     public List<Repository> findAll(); //findAll  override ettik.
+
+    Optional<Repository> findByOrganizationAndRepository(String organization, String repository);
 
 
     //Biz burada named queryler de yazabiliriz.Named query de metod adlandırmasına göre otomotik olrak sql querysine çevirebiliyor.

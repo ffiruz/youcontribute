@@ -1,6 +1,7 @@
 package com.ferdi.youcontribute.service;
 
 import com.ferdi.youcontribute.controller.resources.RepositoryResource;
+import com.ferdi.youcontribute.exception.DuplicatedRepositoryException;
 import com.ferdi.youcontribute.models.Repository;
 import com.ferdi.youcontribute.repository.RepositoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,20 @@ public class RepositoryService {  //Eğer ben bu servis içerisinde ki bir trans
     //for save operation->Aynı kayda biren fazla kişi erişiyorsa , datanın belli strajiler ile kayıt edilirken,  kitlenmesi lazım.Çünkü Race Condition problemi ortaya çıkabilir.
     //Düzgün transacitonal yapılmazsa data kirliliğine sebep olabilir.
     public void create(String repository,String organization) {
+        this.validate(organization,repository);  //validation control
         Repository r = Repository.builder().repository(repository).organization(organization).build();
         repositoryRepository.save(r);
     }
 
     public List<Repository> list() {
         return repositoryRepository.findAll();
+    }
+
+    private void validate(String organization,String repository)
+    {
+        this.repositoryRepository.findByOrganizationAndRepository(organization,repository)
+                .ifPresent(item -> {
+                     throw new DuplicatedRepositoryException(organization,repository);  //duplicate exception -> Eğer organization ,repository varsa bir exception fırlatacak.
+                });
     }
 }

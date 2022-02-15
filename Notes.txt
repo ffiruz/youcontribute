@@ -83,6 +83,9 @@ Repository Test --> Integration tesi.Integration testlerin sonunda IT eklenir ge
 Github --> base Url : https://api.github.com/  ->Postmen içerisinde Enviroment da key value olarak set edebiliriz.
 key:github_base , value: https://api.github.com/  -> ulaşmak içi: {{github_base}} kullanabiliriz.
 
+ls -l ->Değişiklik yaptığımız yerleri listeler.
+rm paket_ismi -> paket ismini siler.
+
 
 -> Http protokolleri
 PATCH -> partial update(kısimi güncelleme):Bir product objemiz (table) olsun.Ve bunun üzerinden kaç defa bakıldığına dair bir data tutuyoruz.Mesela sayfaya bir ziyaret olduğunda product'ın bütün datasının değiştirilmesi yerine , ilgili fieldı güncelleme.
@@ -118,7 +121,11 @@ docker exec -it 3d084248d898  sh  ->Container ın içine gireriz. Burada 3d08424
 
 mysql -u root -p  -> "root" username adlı mysql connectionına bağlanıyoruz.
 
-password:my-secret-pw  ->şifreyi giriyoruz. Artık mysql içerisindeyiz.
+password: ps
+  ->şifreyi giriyoruz. Artık mysql içerisindeyiz.
+
+docker exec -it <CONTAINER_ID>  mysql -uroot -p  -> 127.0.0.7 using password hatası çözümü
+
 
 show databases; -> databaseleri gösterir.
 
@@ -148,12 +155,11 @@ package-lock.json->Projede kulllandığın librarleri versiyonlarını yönetti�
 node_modules -> Java da ki .m2 klasörüne denk geliyor.
 
 html projesi nasıl ayağa kaldırılır ?
-
-Yazdığımız javascript (veya typescript) dosyalarını , bir web server üzerinde ayağa kaldırıyor.(node js)
+->Yazdığımız javascript (veya typescript) dosyalarını , bir web server üzerinde ayağa kaldırıyor.(node js)
 
 -> twitter boostrap üzerinden bir template alacağız. -> https://getbootstrap.com/docs/5.1/examples/
 
--> twitter bootsrap dependency ->  ng add @ng-bootstrap/ng-bootstrap  (projenin olduğu dizine) 
+-> twitter bootsrap dependency ->  ng add @ng-bootstrap/ng-bootstrap  (projenin olduğu dizinde) 
 -> cdn den de çekebiliriz." 
  <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">"->http protokolüne yazmaya gerek yok.Böylece hangi protokolse onu çejecek.
 Yukarıdaki cnd i index.html içerisine ekleriz.
@@ -162,15 +168,15 @@ twitter bootsrap da grid sistemi var.Sayfayı kolonlara bölmek.
 ->ng add @fortawesome/angular-fontawesome : font ekleme  ve simge eklemek için kullanılır.
 
 
-Bir component oluşturalım.-> ng g c home  : home adından bir component dosyası oluşturuyoruz.(gitbash:proje dizini)
+Bir component oluşturalım.-> ng g c home  : home adından bir component dosyası oluşturuyoruz.(gitbash:proje dizininde yapalım)
 
 Bir service generate edelim-> ng g s services/repository  -> rest api ye sorgu atacak kısım burada olacak.
 
 Payload vs test etmek için kullanılan site -> https://webhook.site/48c6a52f-e870-4fce-890e-38cfe39c8263  .UI tarafınfan bir istek attığımzıda bu sitedeki belittiğimzi api ya düşer ve rahatça test edebiliriz.
 
+enviroment.ts -> java da ki application.property gibi.endpoint vs alanları burada tanımlarız.
 
-
-
+npm install ngx -toastr --save -> animation-> https://www.npmjs.com/package/ngx-toastr
 
 port kill :
 

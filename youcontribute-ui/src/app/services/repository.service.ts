@@ -13,6 +13,7 @@ export class RepositoryService {
    }
 
    import(organization:String,repository:String): Observable<any> {
-    return this.http.post<any>(environment.API_URL, {organization:organization,repository:repository})
+     console.log()
+    return this.http.post<any>(`${environment.API_URL}/repositories`, {organization:organization,repository:repository})
    }
 }

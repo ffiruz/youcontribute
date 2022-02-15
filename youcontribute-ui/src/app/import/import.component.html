@@ -10,7 +10,7 @@
               <input type="text" class="form-control" id="repository" placeholder="Repository"  formControlName="repository">
             </div>
             <div class="col-auto">
-              <button type="submit" class="btn btn-primary mb-3"><fa-icon [icon]="faPlus" ></fa-icon> Import</button>
+              <button type="submit" class="btn btn-primary mb-3" [disabled]="loading"  ><fa-icon [icon]="faPlus" ></fa-icon> Import</button>
             </div>
           </form>
     </div>

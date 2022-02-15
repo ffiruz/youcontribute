@@ -9,6 +9,9 @@ import {Routes} from "@angular/router";
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+
 
 
 const routes: Routes = [
@@ -28,7 +31,10 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     FontAwesomeModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,5 +1,6 @@
 package com.ferdi.youcontribute.manager;
 
+import com.ferdi.youcontribute.config.ApplicationProperties;
 import com.ferdi.youcontribute.config.GithubProperties;
 import com.ferdi.youcontribute.models.Issue;
 import com.ferdi.youcontribute.models.Repository;
@@ -12,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class RepositoryManager {
 
     private final GithubClient githubClient;
 
+    private  final ApplicationProperties applicationProperties;
+
     public void importRepository(String organization, String repository) {
         repositoryService.create(repository, organization);
     }
@@ -42,14 +45,19 @@ public class RepositoryManager {
 
     @Async
     public void importIssues(Repository repository) {
-        //Bu job çalışırken bir önceki günün issue larını almaya çalışacağız.Böylece dünden itibaren açılan issuelar ile sadece logic oalcak.
+        //Bu job çalışırken bir önceki schedule nın issue larını almaya çalışacağız.Böylece önceki shedule  itibaren açılan issuelar ile sadece çalışacak.
         //Instant bir anı, zaman çizgisindeki belirli bir noktayı temsil eder. · LocalDateTime tarih ve günün saatini temsil eder.
+        int sinceBeforeSchedule = applicationProperties.getImportfrequency()/60000;
 
-        LocalDate sinceYesterday = LocalDate.now().minus(1, ChronoUnit.DAYS);
-        //  LocalDate sinceDate =  LocalDate.ofInstant Instant.now().minus(1, ChronoUnit.DAYS)
+        LocalDateTime since = LocalDateTime.now(ZoneOffset.UTC).minus(sinceBeforeSchedule, ChronoUnit.MINUTES); //Schedule 1 dakika da bir çalışıyor.Her bir dakika öncesini gidip alcak.
+
+        Instant instantOfNow = Instant.now().minus(sinceBeforeSchedule, ChronoUnit.MINUTES);
+        LocalDate localDate
+                = LocalDateTime.ofInstant(instantOfNow, ZoneOffset.UTC).toLocalDate();
+
 
         GithubIssueResponse[] githubIssuesResponses = this.githubClient.listIssues(repository.getOrganization(),
-                repository.getRepository(), sinceYesterday);
+                repository.getRepository(),localDate);
         List<Issue> issues = Arrays.stream(githubIssuesResponses).map(githubIssue -> Issue.builder().
                         title(githubIssue.getTitle()).body(githubIssue.getBody()).build())
                 .collect(Collectors.toList());
