@@ -11,12 +11,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { IssueListComponent } from './issues/issue-list/issue-list.component';
+import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'import', component: ImportComponent },
+  { path: 'issues/:id', component: IssueListComponent },
   { path: '',redirectTo:'home',pathMatch:'full' }
 ];
 
@@ -24,7 +27,8 @@ const routes: Routes = [
   declarations: [
     AppComponent,
     HomeComponent,
-    ImportComponent
+    ImportComponent,
+    IssueListComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +37,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule, // required animations module
-    ToastrModule.forRoot(), // ToastrModule added
+    ToastrModule.forRoot(),  // ToastrModule added
+     AccordionModule.forRoot(), 
     
   ],
   providers: [],

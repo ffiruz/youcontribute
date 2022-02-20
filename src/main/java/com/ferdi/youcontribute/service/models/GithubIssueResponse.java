@@ -9,7 +9,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Date;
-
+//Githubdan under score şeklinde response dönüyor.(repository_id örnek.)->Aşağıdaki SnakeCaseStrtegey belittiğimiz alanlara map edeceğini bilir.(camel case)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class) //Aşağıda yazdığımız camel case formatta ki değişkenleri(örnek:htmlUrl),snakeCase(örnek:html_url) e çevirecek.Deserilaze işleminde.
 @Data
 public class GithubIssueResponse {
@@ -20,7 +20,7 @@ public class GithubIssueResponse {
     public String commentsUrl;
     public String eventsUrl;
     public String htmlUrl;
-    public int id;
+    public Long id;
     public String nodeId;
     public long number;
     public String title;
@@ -38,7 +38,7 @@ public class GithubIssueResponse {
     public String authorAssociation;
     public Object activeLockReason;
     public boolean draft;
-   public Object pull_request;
+   public PullRequest pullRequest;
     public String body;
    public Reactions reactions;
     public String timelineUrl;

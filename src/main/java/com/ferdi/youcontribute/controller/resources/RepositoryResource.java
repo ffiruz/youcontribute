@@ -11,12 +11,14 @@ import java.util.stream.Collectors;
 @Builder
 public class RepositoryResource {
 
+    private  int id;
     private String name;
     private  String organization;
 
     public static RepositoryResource createFor(Repository repository) //Model to Dto
     {
         return RepositoryResource.builder()
+                .id(repository.getId())
                 .name(repository.getRepository())
                 .organization(repository.getOrganization())
                 .build();

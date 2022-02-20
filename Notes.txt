@@ -133,6 +133,8 @@ use youcontribute; -> youcontribute datatable ını kullanmak istediğimizi söy
 
 show tables; -> tabloları listeler.  (Bizim tablolar-> issue, ve repository)
 
+show create table issue; -> issue tablosunu detaylı tanımlamasını açar.
+
 describe issue;  -> issue tablosunu bize gösterir.Hangi alanlar var.Hangi tipde vs.
 
 select * from repository; -> select vs yazabiliriz.
@@ -178,10 +180,20 @@ enviroment.ts -> java da ki application.property gibi.endpoint vs alanları bura
 
 npm install ngx -toastr --save -> animation-> https://www.npmjs.com/package/ngx-toastr
 
-port kill :
+-> Biz RestApi ye bir istek attığımızda bize gelen data serilaze  olmuş şekilde bize döner.Backend tarafında bir çıktıyı dış dünyaya gönderirken bu serilaze olur.(String vs.)
+Biz bu datayı serilaze olmuş datayı kendiş tarafımız da okumak için deserilaze etmemiz gerekir.Yani bir tane objeye cast etmemiz gerek.->Repository class oarak Angularada aşağıdaki gibi oluşturuyoruz.
 
+ng g class  _models/repository -> component ile service ve modelleri ayırmak için "_" kullanılabilir. _models içinde Repositor.ts dosyasını oluşturu.
+
+
+port kill :
 netstat -ano | findstr :3306
 tskill 7484
+
+
+Sprinde Jackson kütüphanesi -> JSON işlemlerini yapmak için kullanırız.Bir objeyi(classı) stringe çevirirken serilaze edebiliyoruz.Yada Strngi tekrardan objeye çevirmek için deserilaze edebiliriz.
+
+
 
 
 

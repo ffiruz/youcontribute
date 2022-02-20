@@ -1,10 +1,13 @@
 import { AstMemoryEfficientTransformer } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ToastrService } from 'ngx-toastr';
 import { first, Observable } from 'rxjs';
-import { RepositoryService } from '../services/repository.service';
+import { RepositoryService } from '../_services/repository.service';
+import { interval, timeout } from 'rxjs';
+
 
 @Component({
   selector: 'app-import',
@@ -22,7 +25,7 @@ export class ImportComponent implements OnInit {
     repository :['',Validators.required],
   });
 
-  constructor(private formBuilder:FormBuilder,private repositoryService:RepositoryService,private toastr:ToastrService) { }
+  constructor(private formBuilder:FormBuilder,private repositoryService:RepositoryService,private toastr:ToastrService,private router:Router) { }
 
   ngOnInit(): void {}
   import()
@@ -33,11 +36,14 @@ export class ImportComponent implements OnInit {
     .subscribe(res => {
       this.loading=false;
       this.toastr.success("imported succesfull","Success")
+      setTimeout(() => {
+        this.router.navigate(['home'])
+      }, 2000 )
+
   },
   error => {
       this.loading=false;
       this.toastr.error(error.error.message,"Error")
-
   }
     )
 

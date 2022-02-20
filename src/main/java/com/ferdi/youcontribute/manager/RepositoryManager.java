@@ -20,6 +20,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +36,7 @@ public class RepositoryManager {
 
     private final GithubClient githubClient;
 
-    private  final ApplicationProperties applicationProperties;
+    private final ApplicationProperties applicationProperties;
 
     public void importRepository(String organization, String repository) {
         repositoryService.create(repository, organization);
@@ -47,7 +48,7 @@ public class RepositoryManager {
     public void importIssues(Repository repository) {
         //Bu job çalışırken bir önceki schedule nın issue larını almaya çalışacağız.Böylece önceki shedule  itibaren açılan issuelar ile sadece çalışacak.
         //Instant bir anı, zaman çizgisindeki belirli bir noktayı temsil eder. · LocalDateTime tarih ve günün saatini temsil eder.
-        int sinceBeforeSchedule = applicationProperties.getImportfrequency()/60000;
+        int sinceBeforeSchedule = applicationProperties.getImportfrequency() / 60000;
 
         LocalDateTime since = LocalDateTime.now(ZoneOffset.UTC).minus(sinceBeforeSchedule, ChronoUnit.MINUTES); //Schedule 1 dakika da bir çalışıyor.Her bir dakika öncesini gidip alcak.
 
@@ -57,9 +58,17 @@ public class RepositoryManager {
 
 
         GithubIssueResponse[] githubIssuesResponses = this.githubClient.listIssues(repository.getOrganization(),
-                repository.getRepository(),localDate);
-        List<Issue> issues = Arrays.stream(githubIssuesResponses).map(githubIssue -> Issue.builder().
-                        title(githubIssue.getTitle()).body(githubIssue.getBody()).build())
+                repository.getRepository(), localDate);
+        List<Issue> issues = Arrays.stream(githubIssuesResponses)
+                .filter(githubIssue -> Objects.isNull(githubIssue.getPullRequest()))
+                .map(githubIssue -> Issue.builder()
+                        .repository(repository)
+                        .githubIssueId(githubIssue.getId())
+                        .githubIssueNumber(githubIssue.getNumber())
+                        .title(githubIssue.getTitle())
+                        .body(githubIssue.getBody())
+                        .url(githubIssue.getHtmlUrl())
+                        .build())
                 .collect(Collectors.toList());
         this.issueService.saveAll(issues);
 
