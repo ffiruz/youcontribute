@@ -45,12 +45,13 @@ public class RepositoryControllerTest {
 
     @Test  //Listelemeyi test edeceğiz.Bunun içierisinde RepositoryService bağımlılığımız var.
     public void it_should_list_repositories() throws Exception {
-        Repository repository = Repository.builder().organization("Project Test Organization").repository("Project Test Repository").build();
+        Repository repository = Repository.builder().id(1).organization("Project Test Organization").repository("Project Test Repository").build();
         given(this.repositoryService.list()).willReturn(Collections.singletonList(repository));  //RepositoryService içerisindeki list metodu çağrıldığıdan ne döneceğini belirtiyoruz.Collections.singletonList ->List döner
 
         //Şimdi asıl işi yapacağımız kısım.
 
         this.mockMvc.perform(get("/repositories")).andDo(print()).andExpect(status().isOk())    //GetReequesti göndereceğimiz kısım ->perform ile sağlıyoruz.
+                .andExpect(jsonPath("$[0].id").value(""))
                 .andExpect(jsonPath("$[0].name").value("Project Test Repository"))
                 .andExpect(jsonPath("$[0].organization").value("Project Test Organization"));
         //Dönen bir liste olduğu için her bir indisi karşılaştırdık.

@@ -18,4 +18,22 @@ public  class ApplicationProperties {
 
     private Integer importfrequency;  //application.importfrequency
 
+    private Integer challengeFrequency;  //application.importfrequency
+
+    private OneSignalProperties oneSignal;
+    //Application.properties içinde her . dediğimiz de bir obje aslında->application.one-signal.api-auth-key
+    //application.one-signal.api-auth-key->applicarion ->parent class, one-signal->static olan class
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static  class OneSignalProperties
+    {
+        private String apiId;
+        private String apiAuthKey;
+        private  String newChallengeTemplateId;
+
+    }
+
+
 }

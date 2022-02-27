@@ -1,5 +1,6 @@
 package com.ferdi.youcontribute.schedulers;
 
+import com.ferdi.youcontribute.client.OneSignalClient;
 import com.ferdi.youcontribute.manager.RepositoryManager;
 import com.ferdi.youcontribute.models.Repository;
 import com.ferdi.youcontribute.service.RepositoryService;
@@ -18,6 +19,7 @@ public class ImportIssueScheduler {
     private  final RepositoryManager repositoryManager;
 
     private final RepositoryService repositoryService;
+
 
     @Scheduled(fixedRateString  = "${application.importfrequency}",initialDelay = 6000)
     //initialDelay ->uygulama ilk ayağa kalktığından , ne kadar süre sonra bu metodun çalışcağını parametre olarak  verebiliriz.(60 saniye)

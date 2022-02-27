@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {  //UI tarafından gelen istekleri crosOrigin ile alınmasını sağladık.
-        registry.addMapping("/**");
+
+        registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
     }
 }

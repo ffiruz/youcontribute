@@ -21,14 +21,11 @@ export class IssueListComponent implements OnInit {
    }
 
 /*
-
 ngOnInit->Sayfa render edildiğinde ilk çalışacak yer.
   endpointdeki id yi alacak.--> this.route.params.subscribe(params => {
       this.list(params["id"]);
     })
   }
-
-
 */
 
   ngOnInit(): void {

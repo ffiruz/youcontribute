@@ -13,6 +13,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { IssueListComponent } from './issues/issue-list/issue-list.component';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
+import { AcceptComponent } from './challenges/accept/accept.component';
+import { RejectComponent } from './challenges/reject/reject.component';
+import { ChallengeListComponent } from './challenges/challenge-list/challenge-list.component';
+import { Challenge } from './_models/challenge';
+import { StatusComponent } from './badges/status/status.component';
 
 
 
@@ -20,6 +25,9 @@ const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'import', component: ImportComponent },
   { path: 'issues/:id', component: IssueListComponent },
+  { path: 'challenges/:id/accept', component: AcceptComponent },
+  { path: 'challenges/:id/reject', component: RejectComponent },
+  { path: 'challenges', component: ChallengeListComponent },
   { path: '',redirectTo:'home',pathMatch:'full' }
 ];
 
@@ -28,7 +36,11 @@ const routes: Routes = [
     AppComponent,
     HomeComponent,
     ImportComponent,
-    IssueListComponent
+    IssueListComponent,
+    AcceptComponent,
+    RejectComponent,
+    ChallengeListComponent,
+    StatusComponent,
   ],
   imports: [
     BrowserModule,

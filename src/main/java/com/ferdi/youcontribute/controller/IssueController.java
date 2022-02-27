@@ -3,6 +3,7 @@ package com.ferdi.youcontribute.controller;
 import com.ferdi.youcontribute.controller.requests.CreateRepositoryRequest;
 import com.ferdi.youcontribute.controller.resources.IssueResource;
 import com.ferdi.youcontribute.controller.resources.RepositoryResource;
+import com.ferdi.youcontribute.models.Issue;
 import com.ferdi.youcontribute.service.IssueService;
 import com.ferdi.youcontribute.service.RepositoryService;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ public class IssueController {
     {
         return  IssueResource.createFor(this.issueService.list(repositoryId));  //model to dto
     }
+
+
 
 
 //repository_id->snake case  (kelimeleri okumak daha kolay(resourcedan))->@RequestParam ->url deki parametre("repository_id")

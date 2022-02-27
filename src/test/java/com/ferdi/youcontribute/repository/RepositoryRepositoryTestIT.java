@@ -2,6 +2,7 @@ package com.ferdi.youcontribute.repository;
 
 import com.ferdi.youcontribute.models.Repository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.BDDAssertions.then;
 
+@Disabled
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @ContextConfiguration(initializers = RepositoryRepositoryTestIT.Initilazer.class )  //Biz gerçek anlamda bir database konfigurasyon testi yapacağız.Bu nedenle mysql ile çalışmak içim bu konfigurasyon önemli.

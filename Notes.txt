@@ -156,6 +156,8 @@ npm projelerin de bağımlılıklar package.json dosyasında yönetilir.Burada d
 package-lock.json->Projede kulllandığın librarleri versiyonlarını yönettiğimiz yer.
 node_modules -> Java da ki .m2 klasörüne denk geliyor.
 
+ng add ngx-bootstrap --component accordion -> accordion kurulumu
+
 html projesi nasıl ayağa kaldırılır ?
 ->Yazdığımız javascript (veya typescript) dosyalarını , bir web server üzerinde ayağa kaldırıyor.(node js)
 
@@ -174,6 +176,8 @@ Bir component oluşturalım.-> ng g c home  : home adından bir component dosyas
 
 Bir service generate edelim-> ng g s services/repository  -> rest api ye sorgu atacak kısım burada olacak.
 
+Bir entity objesi generate edelim -> ng g class _models/Person ->"_models" adlı package altında Person isminde field ları yazabileceğimiz obje.
+
 Payload vs test etmek için kullanılan site -> https://webhook.site/48c6a52f-e870-4fce-890e-38cfe39c8263  .UI tarafınfan bir istek attığımzıda bu sitedeki belittiğimzi api ya düşer ve rahatça test edebiliriz.
 
 enviroment.ts -> java da ki application.property gibi.endpoint vs alanları burada tanımlarız.
@@ -187,12 +191,32 @@ ng g class  _models/repository -> component ile service ve modelleri ayırmak i�
 
 
 port kill :
-netstat -ano | findstr :3306
+netstat -ano | findstr :9080
 tskill 7484
 
 
 Sprinde Jackson kütüphanesi -> JSON işlemlerini yapmak için kullanırız.Bir objeyi(classı) stringe çevirirken serilaze edebiliyoruz.Yada Strngi tekrardan objeye çevirmek için deserilaze edebiliriz.
 
+Bildirim gönderme :WebPush ->Bildirimler sadece mobil de değil, web de de gönderilir.Mesela bir e ticaret sitesine girdiniz ve orada bir ürünle ilgili bildirim almak istiyorsanız o an size bir bildirim site içerisinde gönderilebilir.
+Ancak sayfayı kapattığınız zaman çalışan bir uygulama olmadığı için herhangi bir bildirim gelmez.Ancak yeni teknolojilerl artık bu yapılıyor.Mesela WebPush.
+WebPush RFC altındadır.Yani herhangi bir şekilde Chromo vs ait bir özellik değildir.
+(RFC : internet standartları ve protokolleri için teknik yayınlar diyebiliriz.)
+Bu nasıl oluyor ?
+Eğer uygulamamız bir service worker kullanıyorsa ; bir notification  olduğunda bildirim olarak bize gönderecek.
+(Service worker:Uygulamayı açtığımız da service worker sisteme register olur ve bu service worker, browser kapalı iken bile uygulamayı ayakta tutuyor.)
+https://app.onesignal.com/signup üzerinden test edebilriiz.https://github.com/CurrencyFair/OneSignal-Java-SDK buradaki dependecy i projemize (gradle) ekledik.
+
+
+-->Java ve Spring dünyasında bir client yazıyorsak  ilk soru bu clientın scope u ne olmalı ?
+Bu bi singleton mı olmalı veya her seferinde yeniden oluşturmalı mıym?
+Mesela bi tane instance ı olan bir Java clientımız var.Ve bu instance ı her yerde kullanabiliriz.Spring de biz buna Bean diyoruz.
+Bu Bean lerin scope ları vardır.Spring de default scope da Singletondır.
+
+
+Gradle:Dependecy Management Tool
+
+
+UI tarafına bir date döndüğümüzde sayılar formatında karışık bir taih dizini bize dönebilir.Angular tarafınfa belli filtrelerle bunu taih formatına dönüştürebiliriz.
 
 
 
