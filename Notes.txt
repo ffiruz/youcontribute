@@ -178,6 +178,8 @@ Bir service generate edelim-> ng g s services/repository  -> rest api ye sorgu a
 
 Bir entity objesi generate edelim -> ng g class _models/Person ->"_models" adlı package altında Person isminde field ları yazabileceğimiz obje.
 
+UI tarafına bir date döndüğümüzde sayılar formatında karışık bir taih dizini bize dönebilir.Angular tarafınfa belli filtrelerle bunu taih formatına dönüştürebiliriz.
+
 Payload vs test etmek için kullanılan site -> https://webhook.site/48c6a52f-e870-4fce-890e-38cfe39c8263  .UI tarafınfan bir istek attığımzıda bu sitedeki belittiğimzi api ya düşer ve rahatça test edebiliriz.
 
 enviroment.ts -> java da ki application.property gibi.endpoint vs alanları burada tanımlarız.
@@ -215,8 +217,16 @@ Bu Bean lerin scope ları vardır.Spring de default scope da Singletondır.
 
 Gradle:Dependecy Management Tool
 
+Disable foreign key: SET FOREIGN_KEY_CHECKS=0;
 
-UI tarafına bir date döndüğümüzde sayılar formatında karışık bir taih dizini bize dönebilir.Angular tarafınfa belli filtrelerle bunu taih formatına dönüştürebiliriz.
+Enable foreign key: SET FOREIGN_KEY_CHECKS=1;
+
+
+
+
+
+
+
 
 
 

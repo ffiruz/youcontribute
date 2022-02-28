@@ -50,11 +50,11 @@ public class RepositoryManager {
         //Instant bir anı, zaman çizgisindeki belirli bir noktayı temsil eder. · LocalDateTime tarih ve günün saatini temsil eder.
         int sinceBeforeSchedule = applicationProperties.getImportfrequency() / 60000;
 
-       /* LocalDateTime now=LocalDateTime.now().minusHours(3).withNano(0);
+       LocalDateTime now=LocalDateTime.now().minusHours(3).withNano(0);
         LocalDateTime since = now.minus(sinceBeforeSchedule, ChronoUnit.MINUTES); //Schedule 1 dakika da bir çalışıyor.Her bir dakika öncesini gidip alcak.
-        LocalDateTime cvar=since.atOffset(ZoneOffset.UTC).toLocalDateTime();*/
+        LocalDateTime cvar=since.atOffset(ZoneOffset.UTC).toLocalDateTime();
 
-        LocalDate since = LocalDate.now().minusDays(1) ; //1 gün öncesi
+
 
         GithubIssueResponse[] githubIssuesResponses = this.githubClient.listIssues(repository.getOrganization(),
                 repository.getRepository(), since);
