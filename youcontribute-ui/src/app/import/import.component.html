@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-lg-12">
+        <form class="row g-3" [formGroup]="importRepositoryForm" (ngSubmit)="import()">
+            <div class="col-auto" >
+                <label for="organization"  hidden="true" class="visually-hidden">Organization</label>
+                <input type="text" class="form-control" id="organization" placeholder="Organization" formControlName="organization">
+              </div>
+            <div class="col-auto">
+              <label for="repository" hidden="true" class="visually-hidden">Repository</label>
+              <input type="text" class="form-control" id="repository" placeholder="Repository"  formControlName="repository">
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary mb-3" [disabled]="loading"  ><fa-icon [icon]="faPlus" ></fa-icon> Import</button>
+            </div>
+          </form>
+    </div>
+
+</div>

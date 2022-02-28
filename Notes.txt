@@ -57,6 +57,191 @@ Console üzerinden çalıştırmak için.--> ./gradlew bootRun  -> bash kullan.
 
 curl -XPOST -H  'Content-Type: application/json'  -d '{}' http://localhost:8080/repositories   --> Cmd ekranondan ilgili pathe bağlanma ve request atma->Post isteği
 
+curl -XPOST -H "Content-Type: application/json"  -d  '{"repository":"test","organization":"test2"}'  http://localhost:8080/repositories
+
+
+Spring Boot Actuator-> Metrik sağlar.
+Quartz Scheduler->Cron job sağlar.
+
+
+UNIT TEST
+
+->Projeyi Spring cli veya spring.io dan indirdiğimizde bize bir test classı sağlar.Ve contextLoad adından bir test metodu sağlar.
+
+ContextLoad içerisine bağımlılıklarımızı koyarız.Bu bağımlılıklar servisler vs.Bu contextLoad testleri , bu bağımlılıkların düzgün şekilde kurulup kurulmadığını test etmemizi sağlıyor.
+
+--> test packageının altına kendi resources klasörümüzü koyup , Application.properties veya yaml dosyasını oluşturabiliriz.Böylece normalde ki Application.properties(proda çıkan) dosyasından ayırmış oluruz.
+Böylece kendi testlerimiz için H2 database vs .kolay entegre olabilen bir db configlerini yazabiliriz. (H2->Dependenciysini build.gradle ekle.)
+
+Controller testi.  -> Controller classının üztüne ctrk+shift+t ile direk (veya go to seçeneğindne) test classına gidebiliriz veya oluşturabiliriz.Package vs düzenlememize gerek yok.Düzgün oluşturacaktır.
+JUNIT 4 de @SpringRunnerWithTest vs yazıyorduk.Ancak JUNIT 5 ile birçok özellik geldi.@ExtendWith anatasyonunu class başına yazıyoruz.
+  
+
+Repository Test --> Integration tesi.Integration testlerin sonunda IT eklenir genelde.
+
+
+Github --> base Url : https://api.github.com/  ->Postmen içerisinde Enviroment da key value olarak set edebiliriz.
+key:github_base , value: https://api.github.com/  -> ulaşmak içi: {{github_base}} kullanabiliriz.
+
+ls -l ->Değişiklik yaptığımız yerleri listeler.
+rm paket_ismi -> paket ismini siler.
+
+
+-> Http protokolleri
+PATCH -> partial update(kısimi güncelleme):Bir product objemiz (table) olsun.Ve bunun üzerinden kaç defa bakıldığına dair bir data tutuyoruz.Mesela sayfaya bir ziyaret olduğunda product'ın bütün datasının değiştirilmesi yerine , ilgili fieldı güncelleme.
+PUT->Hangi fieldın değiştiği ile ilgilenmiyoruz.Çünkü elimiz de objenin son hali var.PUT ile db de ki datayı komple güncelleme.
+
+
+
+Dış Entegrasyon hk.
+
+Eğer projemizde dış bir client'a (entegrasyona) bağlanılırken ,  davranışı singleton mı olmalı veya birden fazla new ile oluşturmalımıyım.Sibngleton ise bir bean ile bunu tanımlamalıyız.
+
+Github client için dependecy: https://mvnrepository.com/artifact/org.eclipse.mylyn.github/org.eclipse.egit.github.core
+
+Spring de bean tanımlamaları vs config aslı bir paket oluşturularak , paketin içerisinde yapılması kararlılık katar.
+
+-> Confidental (gizi) dataları proje içerisine yazmamız gerekir.(application.properites vs. içerisine).Bunun yerine ${} şeklinde (projede ki token tanımı gibi) ortam değişkeni kullanabiliriz.
+
+-->Java memory management konusuda çok güçlü bir dildir.
+
+
+
+
+-->JSON Objesini ,Pojo ya çeviren site-> https://json2csharp.com/json-to-pojo
+
+
+->Intellije IDEA da String manipulation diye bir plugin var.Ve bu plugin , değişkenleri camel case yapısına çevirmede ve birçok özellik konusunda bize yardımcı oluyor.
+
+
+->Konsole üzerinden database e bağlanma.
+
+docker ps -> image ları listeler.
+docker exec -it 3d084248d898  sh  ->Container ın içine gireriz. Burada 3d084248d898-> mysql image id.Bu şekilde herhangi bir image ın içine girebilriiz(image ıd verereek)
+
+mysql -u root -p  -> "root" username adlı mysql connectionına bağlanıyoruz.
+
+password: ps
+  ->şifreyi giriyoruz. Artık mysql içerisindeyiz.
+
+docker exec -it <CONTAINER_ID>  mysql -uroot -p  -> 127.0.0.7 using password hatası çözümü
+
+
+show databases; -> databaseleri gösterir.
+
+use youcontribute; -> youcontribute datatable ını kullanmak istediğimizi söylüyoruz.
+
+show tables; -> tabloları listeler.  (Bizim tablolar-> issue, ve repository)
+
+show create table issue; -> issue tablosunu detaylı tanımlamasını açar.
+
+describe issue;  -> issue tablosunu bize gösterir.Hangi alanlar var.Hangi tipde vs.
+
+select * from repository; -> select vs yazabiliriz.
+
+
+Alt+F7 -> Metodun veya classın proje de çağrıldığı yerleri bulur.
+
+Angular 
+
+1.Angular (atası Angular js) ilk çıktığı zaman (diğer ui frameworkler de sonradan çıktı->Vue,React)
+Dependecy Injection,Component,Testable application özellikleri önemli idi.
+
+angular kurulumu-> npm install -g @angular/cli  (npm kurulu olması gerekir.)->Burada ki g -> global olarak bağımlılıkları ekle.Proje bazlı değil
+ng ->available commandleri listeler.
+ng new youcontribute-ui->"youcontribute-ui" adında yeni bir proje oluşturur.
+Consoldan code . -> Projeyi bize açar.
+ng serve -> uygulamayı ayağa kaldırır.
+npm projelerin de bağımlılıklar package.json dosyasında yönetilir.Burada depencies altında kiler prodda , nondependecies dekiler dev ortamında.
+package-lock.json->Projede kulllandığın librarleri versiyonlarını yönettiğimiz yer.
+node_modules -> Java da ki .m2 klasörüne denk geliyor.
+
+ng add ngx-bootstrap --component accordion -> accordion kurulumu
+
+html projesi nasıl ayağa kaldırılır ?
+->Yazdığımız javascript (veya typescript) dosyalarını , bir web server üzerinde ayağa kaldırıyor.(node js)
+
+-> twitter boostrap üzerinden bir template alacağız. -> https://getbootstrap.com/docs/5.1/examples/
+
+-> twitter bootsrap dependency ->  ng add @ng-bootstrap/ng-bootstrap  (projenin olduğu dizinde) 
+-> cdn den de çekebiliriz." 
+ <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">"->http protokolüne yazmaya gerek yok.Böylece hangi protokolse onu çejecek.
+Yukarıdaki cnd i index.html içerisine ekleriz.
+twitter bootsrap da grid sistemi var.Sayfayı kolonlara bölmek.
+
+->ng add @fortawesome/angular-fontawesome : font ekleme  ve simge eklemek için kullanılır.
+
+
+Bir component oluşturalım.-> ng g c home  : home adından bir component dosyası oluşturuyoruz.(gitbash:proje dizininde yapalım)
+
+Bir service generate edelim-> ng g s services/repository  -> rest api ye sorgu atacak kısım burada olacak.
+
+Bir entity objesi generate edelim -> ng g class _models/Person ->"_models" adlı package altında Person isminde field ları yazabileceğimiz obje.
+
+UI tarafına bir date döndüğümüzde sayılar formatında karışık bir taih dizini bize dönebilir.Angular tarafınfa belli filtrelerle bunu taih formatına dönüştürebiliriz.
+
+Payload vs test etmek için kullanılan site -> https://webhook.site/48c6a52f-e870-4fce-890e-38cfe39c8263  .UI tarafınfan bir istek attığımzıda bu sitedeki belittiğimzi api ya düşer ve rahatça test edebiliriz.
+
+enviroment.ts -> java da ki application.property gibi.endpoint vs alanları burada tanımlarız.
+
+npm install ngx -toastr --save -> animation-> https://www.npmjs.com/package/ngx-toastr
+
+-> Biz RestApi ye bir istek attığımızda bize gelen data serilaze  olmuş şekilde bize döner.Backend tarafında bir çıktıyı dış dünyaya gönderirken bu serilaze olur.(String vs.)
+Biz bu datayı serilaze olmuş datayı kendiş tarafımız da okumak için deserilaze etmemiz gerekir.Yani bir tane objeye cast etmemiz gerek.->Repository class oarak Angularada aşağıdaki gibi oluşturuyoruz.
+
+ng g class  _models/repository -> component ile service ve modelleri ayırmak için "_" kullanılabilir. _models içinde Repositor.ts dosyasını oluşturu.
+
+
+port kill :
+netstat -ano | findstr :9080
+tskill 7484
+
+
+Sprinde Jackson kütüphanesi -> JSON işlemlerini yapmak için kullanırız.Bir objeyi(classı) stringe çevirirken serilaze edebiliyoruz.Yada Strngi tekrardan objeye çevirmek için deserilaze edebiliriz.
+
+Bildirim gönderme :WebPush ->Bildirimler sadece mobil de değil, web de de gönderilir.Mesela bir e ticaret sitesine girdiniz ve orada bir ürünle ilgili bildirim almak istiyorsanız o an size bir bildirim site içerisinde gönderilebilir.
+Ancak sayfayı kapattığınız zaman çalışan bir uygulama olmadığı için herhangi bir bildirim gelmez.Ancak yeni teknolojilerl artık bu yapılıyor.Mesela WebPush.
+WebPush RFC altındadır.Yani herhangi bir şekilde Chromo vs ait bir özellik değildir.
+(RFC : internet standartları ve protokolleri için teknik yayınlar diyebiliriz.)
+Bu nasıl oluyor ?
+Eğer uygulamamız bir service worker kullanıyorsa ; bir notification  olduğunda bildirim olarak bize gönderecek.
+(Service worker:Uygulamayı açtığımız da service worker sisteme register olur ve bu service worker, browser kapalı iken bile uygulamayı ayakta tutuyor.)
+https://app.onesignal.com/signup üzerinden test edebilriiz.https://github.com/CurrencyFair/OneSignal-Java-SDK buradaki dependecy i projemize (gradle) ekledik.
+
+
+-->Java ve Spring dünyasında bir client yazıyorsak  ilk soru bu clientın scope u ne olmalı ?
+Bu bi singleton mı olmalı veya her seferinde yeniden oluşturmalı mıym?
+Mesela bi tane instance ı olan bir Java clientımız var.Ve bu instance ı her yerde kullanabiliriz.Spring de biz buna Bean diyoruz.
+Bu Bean lerin scope ları vardır.Spring de default scope da Singletondır.
+
+
+Gradle:Dependecy Management Tool
+
+Disable foreign key: SET FOREIGN_KEY_CHECKS=0;
+
+Enable foreign key: SET FOREIGN_KEY_CHECKS=1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
