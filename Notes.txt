@@ -222,6 +222,18 @@ Disable foreign key: SET FOREIGN_KEY_CHECKS=0;
 Enable foreign key: SET FOREIGN_KEY_CHECKS=1;
 
 
+Bir back end projesi nasıl dockerize edilir ?
+Bir projeyi container dünyasına alıştırmamaız gerekir.Birçok yöntemle bunu yapabiliriz.
+Burada bizim bir projemiz var ve yapabileceğimiz bir seçenek var ancak projeler fazlalaşırsa bir helm chart oluşturup , bunun üzerinden projeleri deploy edebiliriz.
+
+Helm chart ->Helm Chart bir Kubernetes uygulaması için gerekli olan bilgiler topluluğunu barındıran dosyadır. 
+Örnek vermek gerekirse Kubernetes deploymentlarında bulunan, service bilgisi, repository bilgisi, ingress bilgisi, load balancer bilgisi gibi bir çok bilgiyi yaml formatında barındırır ve versiyonlar.
+Bir nevi paket yöneticisi .Javadaki Maven gibi , Node js deki npm gibi.
+ 
+Öncelikle biizm java projemiz de dependecy management toolumuzun adı gradle.
+
+
+
 
 
 

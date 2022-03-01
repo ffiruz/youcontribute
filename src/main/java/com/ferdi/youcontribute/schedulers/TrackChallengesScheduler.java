@@ -40,10 +40,10 @@ public class TrackChallengesScheduler {
                 .forEach(issueChallenge -> {
                     Repository repository=issueChallenge.getIssue().getRepository(); //Her bir issueChallenge datasının respository bilgisini alıyoruz.
                     Arrays.stream(this.githubClient.listPullRequest(repository.getOrganization(),repository.getRepository())) //Github clientına giderek pull requestler çekilir.
-                            .filter(pull-> "ffiruz".equals(pull.getUser().getLogin()) && "closed".equals(pull.getState()))//Eğer çekilen pull request user bilgisi ve status u bu kontrolü sağlıyorsa;
+                            .filter(pull-> "ffiruz".equals(pull.getUser().getLogin()) && pull.getBody().contains(String.format("Fixes #%d",issueChallenge.getIssue().getGithubIssueNumber())) && "closed".equals(pull.getState()))//Eğer çekilen pull request user bilgisi ve status u bu kontrolü sağlıyorsa;ve body ike bu issue nun çözüldüğünü belirten bir text kontrolü
                             .findFirst()
                             .ifPresent(pulls -> {
-                                System.out.println("Issue solved!!"); //status update
+                                this.issueChallengeService.updateChallengeStatus(issueChallenge.getId(),IssueChallengeStatus.COMPLETED);  //Eğer issure çözüldüyse complete çek.
                             });
                 });
         log.info("Track Challenge issue scheduler finished");

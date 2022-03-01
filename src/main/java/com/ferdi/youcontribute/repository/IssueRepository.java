@@ -19,6 +19,8 @@ public interface IssueRepository  extends PagingAndSortingRepository<Issue,Integ
     @Query(value = "select * from issue where id not in (select issue_id from issue_challenge) order by rand() limit 1", nativeQuery = true)
     Optional<Issue> findRandomIssue();
 
+    Optional<Issue> findByGithubIssueId(Long githubIssueId);
+
     //Burada issuelar -> githubdakiler
     //issue_challenge ise -> kullanıcaya önerdiğimiz issuları tuttuğumuz tablo
     //Yukarıdaki sorgu şunu yapıyor.->Issue tablosundan random getirlecek bir data .Ancak bunu getiriken , issue_challenge tablosunda olmayan bir kayıt olmalı.

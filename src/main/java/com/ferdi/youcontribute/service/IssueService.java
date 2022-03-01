@@ -23,7 +23,14 @@ public class IssueService {
 
     @Transactional
     public void saveAll(List<Issue> issues) {
-        issueRepository.saveAll(issues);
+
+        issues.forEach(issue-> {
+            if(this.issueRepository.findByGithubIssueId(issue.getGithubIssueId()).isPresent())  //githubId->uniq
+            {
+                this.issueRepository.save(issue);
+            }
+        });
+
     }
 
     public  List<Issue> list(Integer repositoryId)

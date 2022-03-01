@@ -12,6 +12,7 @@ public class GithubPullsResponse {
 
     private  String state;
     private User user;
+    private String body;
 
 
     @Data

@@ -54,8 +54,6 @@ public class RepositoryManager {
         LocalDateTime since = now.minus(sinceBeforeSchedule, ChronoUnit.MINUTES); //Schedule 1 dakika da bir çalışıyor.Her bir dakika öncesini gidip alcak.
         LocalDateTime cvar=since.atOffset(ZoneOffset.UTC).toLocalDateTime();
 
-
-
         GithubIssueResponse[] githubIssuesResponses = this.githubClient.listIssues(repository.getOrganization(),
                 repository.getRepository(), since);
         List<Issue> issues = Arrays.stream(githubIssuesResponses)

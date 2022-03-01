@@ -53,7 +53,7 @@ public class GithubClient { //client oluşturacağız
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization","token "+githubProperties.getToken().trim());  //Enviroment variables da -> githubProperties.getToken() set edildi.
         HttpEntity request= new HttpEntity(headers);
-        String pullRequestUrl=String.format("%s/repos/%s/%s/pulls",this.githubProperties.getApiUrl(),owner,repository);     //-->BaseUrl/repos/vmg/redcarpet/issues?since=date ->BaeUrl:application.propertys içinden set edilecek.
+        String pullRequestUrl=String.format("%s/repos/%s/%s/pulls?state=closed",this.githubProperties.getApiUrl(),owner,repository);     //-->BaseUrl/repos/vmg/redcarpet/issues?since=date ->BaeUrl:application.propertys içinden set edilecek.
         //%s ile belirttiğimiz parametre de dinamik olarak gelecek alanlarımız.
 
 
