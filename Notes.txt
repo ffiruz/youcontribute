@@ -223,6 +223,11 @@ Enable foreign key: SET FOREIGN_KEY_CHECKS=1;
 
 
 Bir back end projesi nasıl dockerize edilir ?
+Amcımız bir docker image ı yaratmak ve bunu istediğimiz  container teknolojisi içine taşıyabilmek.
+Burada image ın boyutu kullandığımız teknoloji ve programlama diline göre değişebiliyor.Bir teknoloji kullandığında onun birçok bağımlılığı vardır.Ve bu onu daha boyutlu yapabilir.
+Java da bir uygulamayı çalıştırıken de alt taraf da JVM olması gerekir.Bu da oluşturulan imagın çalıştırılan containerda JVM altyapısı olması gerektiğini bize söyler.
+
+
 Bir projeyi container dünyasına alıştırmamaız gerekir.Birçok yöntemle bunu yapabiliriz.
 Burada bizim bir projemiz var ve yapabileceğimiz bir seçenek var ancak projeler fazlalaşırsa bir helm chart oluşturup , bunun üzerinden projeleri deploy edebiliriz.
 
@@ -230,7 +235,61 @@ Helm chart ->Helm Chart bir Kubernetes uygulaması için gerekli olan bilgiler t
 Örnek vermek gerekirse Kubernetes deploymentlarında bulunan, service bilgisi, repository bilgisi, ingress bilgisi, load balancer bilgisi gibi bir çok bilgiyi yaml formatında barındırır ve versiyonlar.
 Bir nevi paket yöneticisi .Javadaki Maven gibi , Node js deki npm gibi.
  
-Öncelikle biizm java projemiz de dependecy management toolumuzun adı gradle.
+Öncelikle bizim java projemiz de dependecy management toolumuzun adı gradle.
+Gradle da bir projeyi container teknolojisine taşımak istiyorsak , artifact bilgisi gerekli(projeden beklenen  çıktı) ->Mesela jar .
+O zaman komut satrırında , proje dizini altında master branchinde -> "gradle buid" dediğimizde ->build klasörü altında ki  libs klasörü altında bir jar dosyası oluşturacak.
+Testleri atlamak için -> gradle build -x test  ->libs altında projenin artficat adını görebiliriz.->youcontribute-0.0.1-SNOPSHOT.jar
+Manuel olarak değil de bu build işlemini bir dosya altında yapabiliriz.->dockerfile adlı bir dosya oluşturup içinde yapabiliriz.Burada bir image oluşturacağız.(Eğer kapsamlı bir image olursa folder da oluşturabilirdik.)
+Burada ki düşünülmesi gereken compiletime bağımlılıkları ve runtime bağımlılıkları.Gradle sadece build ederken bize yardımcı oluyor.ancak proje çalışırken ihtiyacımız yok.
+Bu nedenle projemiz iki aşamadan oluşuyor.Birinci aşamada Java nın JDK sı (Gradle dan türeme bir image ile bunu yapabiliriz.).İkinci aşamada ise , birinci aşama sayesinde oluşan jar dosyasını alabiliriz.(Bu jarı çalıştıracağız.)
+Burada bazı yapıları inceleyeceğiz.
+Compile aşamaları (JDK)
+1.OpenJDK  -->15-jdk-alpine imageını kullanacağız.-->docker pull openjdk:15-jdk-alpine  (docker hubdan aldık).->Bunu oluşturduğumuz DockerFile içine 1.indis olarak ekliyoruz.->FROM openjdk:15-jdk-alpine as builder->buildir:alias
+2.Ardından bir tane çalışma folder 'ı oluşturacağız-->RUN mkdir -p/usr/src/app
+3.WORKDIR /usr/src/app ->çalışma path'ini kopyala
+4.COPY . . ->bütün dosyaları buraya kopyalarız.(build ,.idea vs.)  -->Oluşturulan yer:/usr/src/app
+Amaç-->Projenin dosyalarını docker engine contextine gönderiyoruz
+->  dockerIgnore dosyası oluşturarak , eklemek istemediğimiz dosyaları buraya eklyebiliriz.
+Proje directory dizinimizde gradlew (gradle wrapper) diye bir yapı var.Gradle kurulu olmayan ortamlarda bize gradle desteği sağlıyor.Böylece gereken configleri bizim için çalıştırır.
+5.RUN ./gradlew build -x test
+
+Not:Compile ve runtime aşamalarını iyi ayıtmak gerek.Aşağıda yeni bir FROM tagı açıp runtime işlemlerini yapacağız.
+Runtime aşamaları(JRE)
+1.OpenJDK ->15-jre-alphine imagını kullanacağız-> docker pull adoptopenjdk/openjdk15:x86_64-alpine-jre-15.0.2_7 (docker hubdan aldık).->Bunu oluşturduğumuz DockerFile içine 2.indis olarak ekliyoruz.->FROM adoptopenjdk/openjdk15:x86_64-alpine-jre-15.0.2_7 AS runner
+2.COPY --from =builder  /usr/src/app/build/libs/*.jar  /app.jar ->builder aliası ile oluşturduğumuz compile ı buraya veriyoruz.ve app.jar olarak bir çatı şeklinde isimlendiriyoruz.
+3.ENTRYPOINT ["java","-jar","/app.jar"]
+
+
+Build etmek için : docker build -t youcontribute:v1 . -->proje dizinin de komut satırında bunu çalıştırıyoruz.youcontribute->proje ismi , -t->tag ismi, :v1 -> versiyon , .-> Dockerfile nın bulunduğu path
+
+Artık docker imageımızı oluşturmuş olduk.
+
+docker run youcontribute:v1 -> uygulama ayağa kalkmaya çalışacak.Ancak ortam değişkeni tanımlamadığımız için hata verecek.Docker üzerinde de verebiliriz.Kubernetes üzerinde de verebiliriz.
+
+
+Dockerfile dosyasını oluşturudğumuz dizin,Docker context için dizinin rootu oluyor.Böylece "COPY . ." şeklinde bir ifade ile Dockerfile dizininde ki dosyalara erişmiş oluyoruz.(build,.idea vs)
+
+
+https://12factor.net/->Bir uygulama geliştirirken , uyulması gerekenler.Mesela static datata dan olabildiğince kaçmak.Mesela "jdbc:mysql://localhost:3306" eğer bu şekilde static tutursak bu gibi dataları , bir container içinde bu uygulama patlar.
+
+->Maven ile Gradle arasındaki temel fark -->Maven da ekstra custom bir işlemde bir plugin veya kendi pluginimizi yazmak gerek (çok zor) ve xml konfigurasyon yapılıyor.
+Gradle da ise daha flexible.Gradle da bir DSL yazıyoruz.(groovy).Mesela bir deploy diye bir plugin yazmak istiyoruz ve uygulamanın bir instansı herokuya atsın, bir instance nı Azure atsın vs .diye bir senaryo düşünelim.Gradle da bunu DSL ile çözebiliriz.
+
+->dockerda bir image ı arama -> docker images | grep image_name  -->docker images | grep youcontribute  
+->CMD : docker images | grep you
+youcontribute         v1        277b0c698dc3   2 hours ago    232MB
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
