@@ -251,26 +251,90 @@ Compile aşamaları (JDK)
 Amaç-->Projenin dosyalarını docker engine contextine gönderiyoruz
 ->  dockerIgnore dosyası oluşturarak , eklemek istemediğimiz dosyaları buraya eklyebiliriz.
 Proje directory dizinimizde gradlew (gradle wrapper) diye bir yapı var.Gradle kurulu olmayan ortamlarda bize gradle desteği sağlıyor.Böylece gereken configleri bizim için çalıştırır.
-5.RUN ./gradlew build -x test
+5.RUN ./gradlew build -x test ->testleri disable ederek.
 
-Not:Compile ve runtime aşamalarını iyi ayıtmak gerek.Aşağıda yeni bir FROM tagı açıp runtime işlemlerini yapacağız.
+Not:Compile ve runtime aşamalarını iyi ayırmak gerek.Aşağıda yeni bir FROM tagı açıp runtime işlemlerini yapacağız.
 Runtime aşamaları(JRE)
 1.OpenJDK ->15-jre-alphine imagını kullanacağız-> docker pull adoptopenjdk/openjdk15:x86_64-alpine-jre-15.0.2_7 (docker hubdan aldık).->Bunu oluşturduğumuz DockerFile içine 2.indis olarak ekliyoruz.->FROM adoptopenjdk/openjdk15:x86_64-alpine-jre-15.0.2_7 AS runner
 2.COPY --from =builder  /usr/src/app/build/libs/*.jar  /app.jar ->builder aliası ile oluşturduğumuz compile ı buraya veriyoruz.ve app.jar olarak bir çatı şeklinde isimlendiriyoruz.
 3.ENTRYPOINT ["java","-jar","/app.jar"]
 
+Dockerfile dosyasını oluşturudğumuz dizin,Docker context için dizinin rootu oluyor.Böylece "COPY . ." şeklinde bir ifade ile Dockerfile dizininde ki dosyalara erişmiş oluyoruz.(build,.idea vs)
 
 Build etmek için : docker build -t youcontribute:v1 . -->proje dizinin de komut satırında bunu çalıştırıyoruz.youcontribute->proje ismi , -t->tag ismi, :v1 -> versiyon , .-> Dockerfile nın bulunduğu path
 
 Artık docker imageımızı oluşturmuş olduk.
 
 docker run youcontribute:v1 -> uygulama ayağa kalkmaya çalışacak.Ancak ortam değişkeni tanımlamadığımız için hata verecek.Docker üzerinde de verebiliriz.Kubernetes üzerinde de verebiliriz.
+Amaç static datata dan olabildiğince kaçmak.Mesela "jdbc:mysql://localhost:3306" eğer bu şekilde static tutursak bu gibi dataları , bir container içinde bu uygulama patlar.
+
+docker run -P youcontribute:v1  ->Port ile çalıştırılır.
+
+Docker ilk olarak 2001 yılın LXC  container olarak faaliyet gösteriyordu.Ancak 2012 yılına kadar pek rağbet görmedi.Çünkü kullanımı kolay değildi.
+LXC (Linux container)container =Docker: Linux içinde folderlar var.Ve bunları yöneten bir process var.Aynı makin üstünde Linuxun bir kopyası varmış gibi kullandırabiliyor.Bu virtual box değildir.
+Virtual box da , her sanal sununucuyu çokladığımızda , her birinin altında bir işletim sistemi yatıyor.Böylece her birinde bir işletim sistemi oluyor.
+Docker da ise alt taraf da docker virtulazationı var.Üst katman da ise image lar var.Yani işletim sistemi ortak , yukarıda ise processler farklı oluyor.
+Docker da port tanımlaması da yapılabiilir.
+Docker da kendi image ımıza taglayabiliriz.-> docker tag  youcontribute:v1   ffiruz/youcontribute:v1 -->youcontribute:v1    tagını , ffiruz/youcontribute:v1 olarak tagladık.
+Ardından yeni docker imageımızı remote a pushlayabiliriz.-->docker push ffiruz/youcontribute:v1
+docker a login olma -> docker login :ffiruz
+		       docker password: Ferdi1907.
+
+Kubernetes:Kubertentesin ilk adı BORG .15 senenin üstünde kullanılan bir sistem.Google altyapısında da kullanılıyor.
+Dağıtık bi sistem düşünelim.15 makine var.Ve bu makinelere bir agent(temsilci ) kurularak birbirlerine otomotik bağlanıp daha sonra da bunlardan bir tane cluster formu oluşturulmasını sağladığımız düşünelim.
+Bu cluster içinde çalışan node (worker node) lar var.Bu workerları yöneten bir beyin var .Buna da master node denir.Bu beyin sağlıklı çalışabilmesi için sadece belirli işleri yapar.
+Mesela bir kuberntes API yı var.Bir deployment oluşturduğumuz da bunun gittiği yer ,Kubernetesin API yı.(Master node da olan bir process).Ardından burada bir metadata olarak oluşuyor.
+Metadanın tuttuğu yerde ETCD (Etcd, Kubernetes için kritik bir veri depolar.).Kuberntes içindeki controller ile bu metadayı alıp işleme sokuyor.
+İşlem de diyor ki elimde bir deployment var.Hangi node a gideceğini , ne kadar cpu ve memory olacağını analiz ediyor.Replikası oluştuurluyor vs.
 
 
-Dockerfile dosyasını oluşturudğumuz dizin,Docker context için dizinin rootu oluyor.Böylece "COPY . ." şeklinde bir ifade ile Dockerfile dizininde ki dosyalara erişmiş oluyoruz.(build,.idea vs)
+-->Kubernetes deployment için bir dosya oluşturuyoruz.İsmini k8s.yaml  ->Bu siteyi referans alıyoruz. (https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+	Kubernetes de bir şeyi deploy edeceğimizi planlıyorsak , minimum deploy edeceğimizi yapıya "pod" denir.
+	pod:Docker da ki containerın üzerine koyulmuş bir abstraction.Neden abstraction?Çünkü docker bu dünyadaki tek container teknolojisi değil.Herhangi bir container teknolojisi ile çalışabilmek için kurulmuş bir yapıdır pod abstraction.
+	
+Pod mantığı şu:Mesela buzdolabına bir çorba koyacaksın pat diye çorbayı koyamazsın.Çorbayı bir kutu veya tencerenin  içerisine koyduktan sonra buzdolabına koyman gerekir.Kubernetes dede en küçük bir parça için bile pod'un içerisine eklemek gerek.
+Mesela 5 tane pod olduğunu düşünelim.Burada bunların yönetimini kind:Deployment bizim için yapabiliyor.
+ 
+	
+Minikube, kendi bilgisayarında Kubernetes'i denemek isteyenler için bir araçtır.Kurulumunu  yapıyoruz.
+Minikube start -> Proje sizinide bu komutu çalıştıralım.
+parametli de çalıştırabiliriz.-->minikube start --node 3 
+Minikube stop-> durdurur.
+kubectx -> Komut satırına bunu yazıyoruz.Bilgisayarımızda birden fazla kuberntes clusterımız olabilir.Cluster dedğimiz prod , müşteri vs. olabilir.Bu clusterların kendi tarafımızda referansı olabilir.Bu referansları localimizdki adı context oluyor.
+Bizim bilgisayarımzıda bir tane context var .O da Minikube.
+
+kubectl-> kuberntesi yönetmek için kullanırız. Biz burada komutu yapıyoruz.Http requesti çevirip gönderecek.
+kubectl get pods -> podsları listeler.Ama oturma odasınadaki.Default olarak
+kubectl get pods --all-namespaces ->Diğer yerlerdeki pods ları listeler.Kubernates bir ev ise ,namespace bu evdeki odalardır.Bu komut tüm odaları listeler.
+kubectl get pods -n kube-system ->kube-system namespaceindeki(odada ki) podsları listeler.
+kubectl delete all --all --all-namespaces->tüm podsları silme
+
+Proje içinde oluşturduğumuz k8s.yaml dosyasını çalıştırmka istiyoruz.
+Öncelikle bir tane namespace oluşturalım.-->kubectl create namespace dev-> dev adında bir namespace oluşturuyoruz.Tüm deploymentları bu odaya yapacağız.
+kubectl apply -f k8s.yaml  ->k8s.yaml dosyasında ki deployment orjinalini alıp ,http payloadına çevirip gönderiyor.Deployment oluşturur.
+kubectl get deploy -> Oluşturulan deployları listeler.
+
+k8s.yaml içine enviroment variables değişkenleri koyabiliriz.
+Burada confident datalar için bazı cüzdanlar oluşturuyoruz. Biz "youcontribute" adında bir cüzdan oluşturabiliriz.
+-->kubectl create secret generic youcontribute --from-literal=db_password=SPRING_DATASOURCE_PASSWORD=my-secret-pw  --from-literal=github_token=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  --from-literal=one_signal_api_auth_key=NjgwZGU1YjktN2FiNy00Y2QyLTkzMTEtOGRkZWU4Y2FjZTEx  --from-literal=one_signal_app_id=3c431a6d-543f-4e13-a368-44329e3fff27  
+k8s.yaml dosyasında ki enviroment altından ki secretlarla uyumlu olmalı.
+
+bu değişiklikleri yaptıktan sonra tekrar ->  kubectl apply -f k8s.yaml
+
+kubectl get secrets -> oluşturduğumuz secretları listeler.
+kubectl delete youcontribute->youcontribute secretını siler.
+
+kubectl describe deploy youcontribute -> youcontribute cüzdanının inceleyebiliriz.
+
+Intellija IDEA da kubernetes pluginini indirip, işimizi kolaylaştırabiliriz.
 
 
-https://12factor.net/->Bir uygulama geliştirirken , uyulması gerekenler.Mesela static datata dan olabildiğince kaçmak.Mesela "jdbc:mysql://localhost:3306" eğer bu şekilde static tutursak bu gibi dataları , bir container içinde bu uygulama patlar.
+
+
+
+
+
+https://12factor.net/->Bir uygulama geliştirirken , uyulması gerekenler.
 
 ->Maven ile Gradle arasındaki temel fark -->Maven da ekstra custom bir işlemde bir plugin veya kendi pluginimizi yazmak gerek (çok zor) ve xml konfigurasyon yapılıyor.
 Gradle da ise daha flexible.Gradle da bir DSL yazıyoruz.(groovy).Mesela bir deploy diye bir plugin yazmak istiyoruz ve uygulamanın bir instansı herokuya atsın, bir instance nı Azure atsın vs .diye bir senaryo düşünelim.Gradle da bunu DSL ile çözebiliriz.
