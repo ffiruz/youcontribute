@@ -311,8 +311,10 @@ kubectl delete all --all --all-namespaces->tüm podsları silme
 
 Proje içinde oluşturduğumuz k8s.yaml dosyasını çalıştırmka istiyoruz.
 Öncelikle bir tane namespace oluşturalım.-->kubectl create namespace dev-> dev adında bir namespace oluşturuyoruz.Tüm deploymentları bu odaya yapacağız.
-kubectl apply -f k8s.yaml  ->k8s.yaml dosyasında ki deployment orjinalini alıp ,http payloadına çevirip gönderiyor.Deployment oluşturur.
+kubectl apply -f k8s.yaml  ->k8s.yaml dosyasında ki deployment orjinalini alıp ,http payloadına çevirip gönderiyor.Deployment oluşturur.Burada k8s.yaml için de yaptığımız her değişiklikden sonra bunu uygularız ve her seferin de bir instance oluşur.
 kubectl get deploy -> Oluşturulan deployları listeler.
+
+kubectl describe pod_name ->podu inceler.
 
 k8s.yaml içine enviroment variables değişkenleri koyabiliriz.
 Burada confident datalar için bazı cüzdanlar oluşturuyoruz. Biz "youcontribute" adında bir cüzdan oluşturabiliriz.
@@ -328,10 +330,22 @@ kubectl describe deploy youcontribute -> youcontribute cüzdanının inceleyebil
 
 Intellija IDEA da kubernetes pluginini indirip, işimizi kolaylaştırabiliriz.
 
+Helm ,Kubernetes üzerinde uygulamaları kolayca yönetmenizi yarayan bir araç olarak karşımıza çıkıyor.Helm ile kolayca deploy edebilir,upgrade edebilir,sürümleri kontrol edebilirsiniz .Bir nevi kuberntesin paket yöneticisi.
+Projemizin mysql bağımlılığı var.
+Helm kurulumu : helm package mysqlchoco install kubernetes-helm
+Mysql i kuberntes ortamında global bir servis varsa kullabiliriz veya mysql i paket yöneticisinden kurabiliriz.
+Öncelikle bitnami üzerinden  ana sunucuyu ekliyoruz.->helm repo add bitnami https://charts.bitnami.com/bitnami  ->bitnami bu tarz global bağımlılıklar için fazlasıyla kullnılıyor.
+Ardından kurulum için -> helm install youcontribute bitnami/mysql --set auth.rootPassword=my-secret-pw --set auth.database=youcontribute --set volumePermissions.enabled=true  ->youcontribute adındaki bir databse i ve şifresi my-secret-pw olan bir database iinstall ececek kubernetese.Bir pod oluşacak.
+
+kubectl get svc -> Servisleri clusterları listeler.
+k8s.yaml içindende ki  db url e buradaki  "youcontribute-mysql" eklenir. ->jdbc:mysql://youcontribute-mysql.default:3306/youcontribute?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false  ->Buradaki default namespace adı
 
 
 
+Burada oluşturduğumuz 
 
+helm ls -> paketleri listeler.
+helm uninstall youcontribute -youcontribute bu helmi siler.
 
 
 https://12factor.net/->Bir uygulama geliştirirken , uyulması gerekenler.
@@ -342,6 +356,14 @@ Gradle da ise daha flexible.Gradle da bir DSL yazıyoruz.(groovy).Mesela bir dep
 ->dockerda bir image ı arama -> docker images | grep image_name  -->docker images | grep youcontribute  
 ->CMD : docker images | grep you
 youcontribute         v1        277b0c698dc3   2 hours ago    232MB
+
+
+docker push -t ffiruz/youcontribute:3.0.0
+
+
+
+Adımlar.
+1.docker build -t youcontribute:v1 .
 
 
 

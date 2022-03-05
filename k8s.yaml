@@ -16,12 +16,12 @@ spec:
     spec:  #Burada her bir pod için containers tagı içinde yazılır.
       containers:
         - name: youcontribute
-          image: ffiruz/youcontribute:v1 #image adı
+          image: ffiruz/youcontribute:v1
           ports:
             - containerPort: 8080
           env:
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://localhost:3306/youcontribute?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
+              value: jdbc:mysql://youcontribute-mysql.default:3306/youcontribute
             - name: SPRING_DATASOURCE_USERNAME
               value: root
             - name: SPRING_DATASOURCE_PASSWORD   #confidential
