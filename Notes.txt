@@ -1,0 +1,404 @@
+Github üzerinden projeyi geliştireceğiz.
+
+1.cmd ekranından projenin olduğu yere git ve -> git init  -> Boş bir reository oluşturur.
+2.gh repo create  ->
+
+Not: ->Cmd ve bash ekranlarında "clear" konsolu temizler.
+
+-> Bir spring projesini oluşturmanın birçok yolu olabilir.
+Normalde biz spring.io üzerinden projeyi generate ediyorduk.
+Diğer yol ise springin kendi cli üzerinde.Otomasyon alanında çok kullanılıyor.Proje yaratmayı otomasyona bindiriyorsak ve mesela microservislerimizi her seferinde yeniden yaratıyorsak  kulanışlı olabilir.
+Spring cli indirmek gerekebilir. -> https://docs.spring.io/spring-boot/docs/current/reference/html/getting-started.html#getting-started.installing.java
+İndirilen dosyanın bin uzantısını -> C:\Spring CLI\spring-2.6.3\bin , bu pathi enviroment variables içinde ki Path alanının sonuna ekle.Cli indirilmiş olur.
+
+
+Spring cli bilgileri:
+
+-->spring init -list  -> Genel paramerrik değerleri bağımlılıkları  için bilgiler bulunur.
+->spring init -> bir proje oluşturur.Default
+-> spring init --build=gradle --dependencies=web,data-jpa,mysql youcontribute.zip   -> buildi gradle olan ve dependencileri web,data-jpa ve mysql(driver için) olan ve youcontribute zip adını vererek, içinde oluşturmak istediğimizi belittik.
+-> Ardından youcontribute.zip dosyası ilgili dizinde oluşacak.Bunu unzip edelim.-> unzip youcontribute.zip 
+->Ardından da zip dosyasını silebiliriz.-> rm youcontribute.zip 
+->Intellija IDEA da open project diyerek -> Projedeki buid.gradle seçilir.Ve Open as Project seçilir.
+
+Gradle Not:
+->Gradle ile bağımlılıklarımız yönetilebilir olacak.Projeyi konfigure etmemizi sağlayacak.
+Gradle için de bir wrapper dosyası var.Bu dosyanın içinde properties ve jar dosyası var.gradle-wrapper.properties,gradle-wrapper.jar dosyaları.Bu dosyalar eğer lokalinde gradle olmasa dahi gradle kurululumunu kendi yapar.
+
+Intellij IDEA not:
+Pluggin-> Presentation Assistant = Kısayolları daha rahat kullanmamızı sağlayan bir plugin
+IDEA da double  shift(iki defa shift ) tuşuna basarsak  ,  istediğimiz şeyi aratabiliriz.
+Örnek vermek istersek elimizde bir kod blogu var ve bunu yorum satırına almak istiyoruz.Kodu seçip double shift dersek , gelen aramada da comment diye aratırsak direk bize yardımcı olur.
+Yani kısa yolları hatırlamadığımızda double shift bize yardımcı olacaktır.
+->Shift+F6 -> Refactor
+->Projeyi IDE üzerinden de çalıştırabiliriz.
+
+Console üzerinden çalıştırmak için.--> ./gradlew bootRun 
+(Burada fail alabilir.Çünkü dependecyleri bazı configlerini de ayağa kaldırmalıyız.Mesela ben mysql kullandım ama herhangi bir config,url vs tanımlamadım."Failed to configure a DataSource: 'url' attribute is not specified and no embedded datasource could be configured.")
+Bunu docker ile çözelim.
+
+Ardında
+->  docker run --name some-mysql  -p 3306:3306 -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=youcontribute -d mysql:5.7 -> youcontribute adından database i olan bir mysql image ayağa kaldıracak.
+  
+
+
+Spring boot , build.gradle dosyasındaki configlerle çalışır ve o şekilde tanır.(pom gibi)
+
+->Mesela lombock u projeye import etmek istiyoruz.Öncelikle build.gradle dosyasına dependecy'i ekleyeceğiz.Ardından Intellije Idea da   compiler->Annotation->Enable >Annotation Processing
+-> https://projectlombok.org/setup/gradle  -> lombock dependecy
+
+Projede application.yaml formatını kullanacağız.Ve değişkenleri dinamik yapacağız.
+
+
+--> Normal de application.properties içerisine eklediğimiz alanları Edit-Configuration->Enviroment Variables içerisine de ekleyerek yapabiliriz.
+
+Console üzerinden çalıştırmak için.--> ./gradlew bootRun  -> bash kullan.
+
+
+curl -XPOST -H  'Content-Type: application/json'  -d '{}' http://localhost:8080/repositories   --> Cmd ekranondan ilgili pathe bağlanma ve request atma->Post isteği
+
+curl -XPOST -H "Content-Type: application/json"  -d  '{"repository":"test","organization":"test2"}'  http://localhost:8080/repositories
+
+
+Spring Boot Actuator-> Metrik sağlar.
+Quartz Scheduler->Cron job sağlar.
+
+
+UNIT TEST
+
+->Projeyi Spring cli veya spring.io dan indirdiğimizde bize bir test classı sağlar.Ve contextLoad adından bir test metodu sağlar.
+
+ContextLoad içerisine bağımlılıklarımızı koyarız.Bu bağımlılıklar servisler vs.Bu contextLoad testleri , bu bağımlılıkların düzgün şekilde kurulup kurulmadığını test etmemizi sağlıyor.
+
+--> test packageının altına kendi resources klasörümüzü koyup , Application.properties veya yaml dosyasını oluşturabiliriz.Böylece normalde ki Application.properties(proda çıkan) dosyasından ayırmış oluruz.
+Böylece kendi testlerimiz için H2 database vs .kolay entegre olabilen bir db configlerini yazabiliriz. (H2->Dependenciysini build.gradle ekle.)
+
+Controller testi.  -> Controller classının üztüne ctrk+shift+t ile direk (veya go to seçeneğindne) test classına gidebiliriz veya oluşturabiliriz.Package vs düzenlememize gerek yok.Düzgün oluşturacaktır.
+JUNIT 4 de @SpringRunnerWithTest vs yazıyorduk.Ancak JUNIT 5 ile birçok özellik geldi.@ExtendWith anatasyonunu class başına yazıyoruz.
+  
+
+Repository Test --> Integration tesi.Integration testlerin sonunda IT eklenir genelde.
+
+
+Github --> base Url : https://api.github.com/  ->Postmen içerisinde Enviroment da key value olarak set edebiliriz.
+key:github_base , value: https://api.github.com/  -> ulaşmak içi: {{github_base}} kullanabiliriz.
+
+ls -l ->Değişiklik yaptığımız yerleri listeler.
+rm paket_ismi -> paket ismini siler.
+
+
+-> Http protokolleri
+PATCH -> partial update(kısimi güncelleme):Bir product objemiz (table) olsun.Ve bunun üzerinden kaç defa bakıldığına dair bir data tutuyoruz.Mesela sayfaya bir ziyaret olduğunda product'ın bütün datasının değiştirilmesi yerine , ilgili fieldı güncelleme.
+PUT->Hangi fieldın değiştiği ile ilgilenmiyoruz.Çünkü elimiz de objenin son hali var.PUT ile db de ki datayı komple güncelleme.
+
+
+
+Dış Entegrasyon hk.
+
+Eğer projemizde dış bir client'a (entegrasyona) bağlanılırken ,  davranışı singleton mı olmalı veya birden fazla new ile oluşturmalımıyım.Sibngleton ise bir bean ile bunu tanımlamalıyız.
+
+Github client için dependecy: https://mvnrepository.com/artifact/org.eclipse.mylyn.github/org.eclipse.egit.github.core
+
+Spring de bean tanımlamaları vs config aslı bir paket oluşturularak , paketin içerisinde yapılması kararlılık katar.
+
+-> Confidental (gizi) dataları proje içerisine yazmamız gerekir.(application.properites vs. içerisine).Bunun yerine ${} şeklinde (projede ki token tanımı gibi) ortam değişkeni kullanabiliriz.
+
+-->Java memory management konusuda çok güçlü bir dildir.
+
+
+
+
+-->JSON Objesini ,Pojo ya çeviren site-> https://json2csharp.com/json-to-pojo
+
+
+->Intellije IDEA da String manipulation diye bir plugin var.Ve bu plugin , değişkenleri camel case yapısına çevirmede ve birçok özellik konusunda bize yardımcı oluyor.
+
+
+->Konsole üzerinden database e bağlanma.
+
+docker ps -> image ları listeler.
+docker exec -it 3d084248d898  sh  ->Container ın içine gireriz. Burada 3d084248d898-> mysql image id.Bu şekilde herhangi bir image ın içine girebilriiz(image ıd verereek)
+
+mysql -u root -p  -> "root" username adlı mysql connectionına bağlanıyoruz.
+
+password: ps
+  ->şifreyi giriyoruz. Artık mysql içerisindeyiz.
+
+docker exec -it <CONTAINER_ID>  mysql -uroot -p  -> 127.0.0.7 using password hatası çözümü
+
+
+show databases; -> databaseleri gösterir.
+
+use youcontribute; -> youcontribute datatable ını kullanmak istediğimizi söylüyoruz.
+
+show tables; -> tabloları listeler.  (Bizim tablolar-> issue, ve repository)
+
+show create table issue; -> issue tablosunu detaylı tanımlamasını açar.
+
+describe issue;  -> issue tablosunu bize gösterir.Hangi alanlar var.Hangi tipde vs.
+
+select * from repository; -> select vs yazabiliriz.
+
+
+Alt+F7 -> Metodun veya classın proje de çağrıldığı yerleri bulur.
+
+Angular 
+
+1.Angular (atası Angular js) ilk çıktığı zaman (diğer ui frameworkler de sonradan çıktı->Vue,React)
+Dependecy Injection,Component,Testable application özellikleri önemli idi.
+
+angular kurulumu-> npm install -g @angular/cli  (npm kurulu olması gerekir.)->Burada ki g -> global olarak bağımlılıkları ekle.Proje bazlı değil
+ng ->available commandleri listeler.
+ng new youcontribute-ui->"youcontribute-ui" adında yeni bir proje oluşturur.
+Consoldan code . -> Projeyi bize açar.
+ng serve -> uygulamayı ayağa kaldırır.
+npm projelerin de bağımlılıklar package.json dosyasında yönetilir.Burada depencies altında kiler prodda , nondependecies dekiler dev ortamında.
+package-lock.json->Projede kulllandığın librarleri versiyonlarını yönettiğimiz yer.
+node_modules -> Java da ki .m2 klasörüne denk geliyor.
+
+ng add ngx-bootstrap --component accordion -> accordion kurulumu
+
+html projesi nasıl ayağa kaldırılır ?
+->Yazdığımız javascript (veya typescript) dosyalarını , bir web server üzerinde ayağa kaldırıyor.(node js)
+
+-> twitter boostrap üzerinden bir template alacağız. -> https://getbootstrap.com/docs/5.1/examples/
+
+-> twitter bootsrap dependency ->  ng add @ng-bootstrap/ng-bootstrap  (projenin olduğu dizinde) 
+-> cdn den de çekebiliriz." 
+ <link rel="stylesheet" href="//stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">"->http protokolüne yazmaya gerek yok.Böylece hangi protokolse onu çejecek.
+Yukarıdaki cnd i index.html içerisine ekleriz.
+twitter bootsrap da grid sistemi var.Sayfayı kolonlara bölmek.
+
+->ng add @fortawesome/angular-fontawesome : font ekleme  ve simge eklemek için kullanılır.
+
+
+Bir component oluşturalım.-> ng g c home  : home adından bir component dosyası oluşturuyoruz.(gitbash:proje dizininde yapalım)
+
+Bir service generate edelim-> ng g s services/repository  -> rest api ye sorgu atacak kısım burada olacak.
+
+Bir entity objesi generate edelim -> ng g class _models/Person ->"_models" adlı package altında Person isminde field ları yazabileceğimiz obje.
+
+UI tarafına bir date döndüğümüzde sayılar formatında karışık bir taih dizini bize dönebilir.Angular tarafınfa belli filtrelerle bunu taih formatına dönüştürebiliriz.
+
+Payload vs test etmek için kullanılan site -> https://webhook.site/48c6a52f-e870-4fce-890e-38cfe39c8263  .UI tarafınfan bir istek attığımzıda bu sitedeki belittiğimzi api ya düşer ve rahatça test edebiliriz.
+
+enviroment.ts -> java da ki application.property gibi.endpoint vs alanları burada tanımlarız.
+
+npm install ngx -toastr --save -> animation-> https://www.npmjs.com/package/ngx-toastr
+
+-> Biz RestApi ye bir istek attığımızda bize gelen data serilaze  olmuş şekilde bize döner.Backend tarafında bir çıktıyı dış dünyaya gönderirken bu serilaze olur.(String vs.)
+Biz bu datayı serilaze olmuş datayı kendiş tarafımız da okumak için deserilaze etmemiz gerekir.Yani bir tane objeye cast etmemiz gerek.->Repository class oarak Angularada aşağıdaki gibi oluşturuyoruz.
+
+ng g class  _models/repository -> component ile service ve modelleri ayırmak için "_" kullanılabilir. _models içinde Repositor.ts dosyasını oluşturu.
+
+
+port kill :
+netstat -ano | findstr :9080
+tskill 7484
+
+
+Sprinde Jackson kütüphanesi -> JSON işlemlerini yapmak için kullanırız.Bir objeyi(classı) stringe çevirirken serilaze edebiliyoruz.Yada Strngi tekrardan objeye çevirmek için deserilaze edebiliriz.
+
+Bildirim gönderme :WebPush ->Bildirimler sadece mobil de değil, web de de gönderilir.Mesela bir e ticaret sitesine girdiniz ve orada bir ürünle ilgili bildirim almak istiyorsanız o an size bir bildirim site içerisinde gönderilebilir.
+Ancak sayfayı kapattığınız zaman çalışan bir uygulama olmadığı için herhangi bir bildirim gelmez.Ancak yeni teknolojilerl artık bu yapılıyor.Mesela WebPush.
+WebPush RFC altındadır.Yani herhangi bir şekilde Chromo vs ait bir özellik değildir.
+(RFC : internet standartları ve protokolleri için teknik yayınlar diyebiliriz.)
+Bu nasıl oluyor ?
+Eğer uygulamamız bir service worker kullanıyorsa ; bir notification  olduğunda bildirim olarak bize gönderecek.
+(Service worker:Uygulamayı açtığımız da service worker sisteme register olur ve bu service worker, browser kapalı iken bile uygulamayı ayakta tutuyor.)
+https://app.onesignal.com/signup üzerinden test edebilriiz.https://github.com/CurrencyFair/OneSignal-Java-SDK buradaki dependecy i projemize (gradle) ekledik.
+
+
+-->Java ve Spring dünyasında bir client yazıyorsak  ilk soru bu clientın scope u ne olmalı ?
+Bu bi singleton mı olmalı veya her seferinde yeniden oluşturmalı mıym?
+Mesela bi tane instance ı olan bir Java clientımız var.Ve bu instance ı her yerde kullanabiliriz.Spring de biz buna Bean diyoruz.
+Bu Bean lerin scope ları vardır.Spring de default scope da Singletondır.
+
+
+Gradle:Dependecy Management Tool
+
+Disable foreign key: SET FOREIGN_KEY_CHECKS=0;
+
+Enable foreign key: SET FOREIGN_KEY_CHECKS=1;
+
+
+Bir back end projesi nasıl dockerize edilir ?
+Amcımız bir docker image ı yaratmak ve bunu istediğimiz  container teknolojisi içine taşıyabilmek.
+Burada image ın boyutu kullandığımız teknoloji ve programlama diline göre değişebiliyor.Bir teknoloji kullandığında onun birçok bağımlılığı vardır.Ve bu onu daha boyutlu yapabilir.
+Java da bir uygulamayı çalıştırıken de alt taraf da JVM olması gerekir.Bu da oluşturulan imagın çalıştırılan containerda JVM altyapısı olması gerektiğini bize söyler.
+
+
+Bir projeyi container dünyasına alıştırmamaız gerekir.Birçok yöntemle bunu yapabiliriz.
+Burada bizim bir projemiz var ve yapabileceğimiz bir seçenek var ancak projeler fazlalaşırsa bir helm chart oluşturup , bunun üzerinden projeleri deploy edebiliriz.
+
+Helm chart ->Helm Chart bir Kubernetes uygulaması için gerekli olan bilgiler topluluğunu barındıran dosyadır. 
+Örnek vermek gerekirse Kubernetes deploymentlarında bulunan, service bilgisi, repository bilgisi, ingress bilgisi, load balancer bilgisi gibi bir çok bilgiyi yaml formatında barındırır ve versiyonlar.
+Bir nevi paket yöneticisi .Javadaki Maven gibi , Node js deki npm gibi.
+ 
+Öncelikle bizim java projemiz de dependecy management toolumuzun adı gradle.
+Gradle da bir projeyi container teknolojisine taşımak istiyorsak , artifact bilgisi gerekli(projeden beklenen  çıktı) ->Mesela jar .
+O zaman komut satrırında , proje dizini altında master branchinde -> "gradle buid" dediğimizde ->build klasörü altında ki  libs klasörü altında bir jar dosyası oluşturacak.
+Testleri atlamak için -> gradle build -x test  ->libs altında projenin artficat adını görebiliriz.->youcontribute-0.0.1-SNOPSHOT.jar
+Manuel olarak değil de bu build işlemini bir dosya altında yapabiliriz.->dockerfile adlı bir dosya oluşturup içinde yapabiliriz.Burada bir image oluşturacağız.(Eğer kapsamlı bir image olursa folder da oluşturabilirdik.)
+Burada ki düşünülmesi gereken compiletime bağımlılıkları ve runtime bağımlılıkları.Gradle sadece build ederken bize yardımcı oluyor.ancak proje çalışırken ihtiyacımız yok.
+Bu nedenle projemiz iki aşamadan oluşuyor.Birinci aşamada Java nın JDK sı (Gradle dan türeme bir image ile bunu yapabiliriz.).İkinci aşamada ise , birinci aşama sayesinde oluşan jar dosyasını alabiliriz.(Bu jarı çalıştıracağız.)
+Burada bazı yapıları inceleyeceğiz.
+Compile aşamaları (JDK)
+1.OpenJDK  -->15-jdk-alpine imageını kullanacağız.-->docker pull openjdk:15-jdk-alpine  (docker hubdan aldık).->Bunu oluşturduğumuz DockerFile içine 1.indis olarak ekliyoruz.->FROM openjdk:15-jdk-alpine as builder->buildir:alias
+2.Ardından bir tane çalışma folder 'ı oluşturacağız-->RUN mkdir -p/usr/src/app
+3.WORKDIR /usr/src/app ->çalışma path'ini kopyala
+4.COPY . . ->bütün dosyaları buraya kopyalarız.(build ,.idea vs.)  -->Oluşturulan yer:/usr/src/app
+Amaç-->Projenin dosyalarını docker engine contextine gönderiyoruz
+->  dockerIgnore dosyası oluşturarak , eklemek istemediğimiz dosyaları buraya eklyebiliriz.
+Proje directory dizinimizde gradlew (gradle wrapper) diye bir yapı var.Gradle kurulu olmayan ortamlarda bize gradle desteği sağlıyor.Böylece gereken configleri bizim için çalıştırır.
+5.RUN ./gradlew build -x test ->testleri disable ederek.
+
+Not:Compile ve runtime aşamalarını iyi ayırmak gerek.Aşağıda yeni bir FROM tagı açıp runtime işlemlerini yapacağız.
+Runtime aşamaları(JRE)
+1.OpenJDK ->15-jre-alphine imagını kullanacağız-> docker pull adoptopenjdk/openjdk15:x86_64-alpine-jre-15.0.2_7 (docker hubdan aldık).->Bunu oluşturduğumuz DockerFile içine 2.indis olarak ekliyoruz.->FROM adoptopenjdk/openjdk15:x86_64-alpine-jre-15.0.2_7 AS runner
+2.COPY --from =builder  /usr/src/app/build/libs/*.jar  /app.jar ->builder aliası ile oluşturduğumuz compile ı buraya veriyoruz.ve app.jar olarak bir çatı şeklinde isimlendiriyoruz.
+3.ENTRYPOINT ["java","-jar","/app.jar"]
+
+Dockerfile dosyasını oluşturudğumuz dizin,Docker context için dizinin rootu oluyor.Böylece "COPY . ." şeklinde bir ifade ile Dockerfile dizininde ki dosyalara erişmiş oluyoruz.(build,.idea vs)
+
+Build etmek için : docker build -t youcontribute:v1 . -->proje dizinin de komut satırında bunu çalıştırıyoruz.youcontribute->proje ismi , -t->tag ismi, :v1 -> versiyon , .-> Dockerfile nın bulunduğu path
+
+Artık docker imageımızı oluşturmuş olduk.
+
+docker run youcontribute:v1 -> uygulama ayağa kalkmaya çalışacak.Ancak ortam değişkeni tanımlamadığımız için hata verecek.Docker üzerinde de verebiliriz.Kubernetes üzerinde de verebiliriz.
+Amaç static datata dan olabildiğince kaçmak.Mesela "jdbc:mysql://localhost:3306" eğer bu şekilde static tutursak bu gibi dataları , bir container içinde bu uygulama patlar.
+
+docker run -P youcontribute:v1  ->Port ile çalıştırılır.
+
+Docker ilk olarak 2001 yılın LXC  container olarak faaliyet gösteriyordu.Ancak 2012 yılına kadar pek rağbet görmedi.Çünkü kullanımı kolay değildi.
+LXC (Linux container)container =Docker: Linux içinde folderlar var.Ve bunları yöneten bir process var.Aynı makin üstünde Linuxun bir kopyası varmış gibi kullandırabiliyor.Bu virtual box değildir.
+Virtual box da , her sanal sununucuyu çokladığımızda , her birinin altında bir işletim sistemi yatıyor.Böylece her birinde bir işletim sistemi oluyor.
+Docker da ise alt taraf da docker virtulazationı var.Üst katman da ise image lar var.Yani işletim sistemi ortak , yukarıda ise processler farklı oluyor.
+Docker da port tanımlaması da yapılabiilir.
+Docker da kendi image ımıza taglayabiliriz.-> docker tag  youcontribute:v1   ffiruz/youcontribute:v1 -->youcontribute:v1    tagını , ffiruz/youcontribute:v1 olarak tagladık.
+Ardından yeni docker imageımızı remote a pushlayabiliriz.-->docker push ffiruz/youcontribute:v1
+docker a login olma -> docker login :ffiruz
+		       docker password: Ferdi1907.
+
+Kubernetes:Kubertentesin ilk adı BORG .15 senenin üstünde kullanılan bir sistem.Google altyapısında da kullanılıyor.
+Dağıtık bi sistem düşünelim.15 makine var.Ve bu makinelere bir agent(temsilci ) kurularak birbirlerine otomotik bağlanıp daha sonra da bunlardan bir tane cluster formu oluşturulmasını sağladığımız düşünelim.
+Bu cluster içinde çalışan node (worker node) lar var.Bu workerları yöneten bir beyin var .Buna da master node denir.Bu beyin sağlıklı çalışabilmesi için sadece belirli işleri yapar.
+Mesela bir kuberntes API yı var.Bir deployment oluşturduğumuz da bunun gittiği yer ,Kubernetesin API yı.(Master node da olan bir process).Ardından burada bir metadata olarak oluşuyor.
+Metadanın tuttuğu yerde ETCD (Etcd, Kubernetes için kritik bir veri depolar.).Kuberntes içindeki controller ile bu metadayı alıp işleme sokuyor.
+İşlem de diyor ki elimde bir deployment var.Hangi node a gideceğini , ne kadar cpu ve memory olacağını analiz ediyor.Replikası oluştuurluyor vs.
+
+
+-->Kubernetes deployment için bir dosya oluşturuyoruz.İsmini k8s.yaml  ->Bu siteyi referans alıyoruz. (https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+	Kubernetes de bir şeyi deploy edeceğimizi planlıyorsak , minimum deploy edeceğimizi yapıya "pod" denir.
+	pod:Docker da ki containerın üzerine koyulmuş bir abstraction.Neden abstraction?Çünkü docker bu dünyadaki tek container teknolojisi değil.Herhangi bir container teknolojisi ile çalışabilmek için kurulmuş bir yapıdır pod abstraction.
+	
+Pod mantığı şu:Mesela buzdolabına bir çorba koyacaksın pat diye çorbayı koyamazsın.Çorbayı bir kutu veya tencerenin  içerisine koyduktan sonra buzdolabına koyman gerekir.Kubernetes dede en küçük bir parça için bile pod'un içerisine eklemek gerek.
+Mesela 5 tane pod olduğunu düşünelim.Burada bunların yönetimini kind:Deployment bizim için yapabiliyor.
+ 
+	
+Minikube, kendi bilgisayarında Kubernetes'i denemek isteyenler için bir araçtır.Kurulumunu  yapıyoruz.
+Minikube start -> Proje sizinide bu komutu çalıştıralım.
+parametli de çalıştırabiliriz.-->minikube start --node 3 
+Minikube stop-> durdurur.
+kubectx -> Komut satırına bunu yazıyoruz.Bilgisayarımızda birden fazla kuberntes clusterımız olabilir.Cluster dedğimiz prod , müşteri vs. olabilir.Bu clusterların kendi tarafımızda referansı olabilir.Bu referansları localimizdki adı context oluyor.
+Bizim bilgisayarımzıda bir tane context var .O da Minikube.
+
+kubectl-> kuberntesi yönetmek için kullanırız. Biz burada komutu yapıyoruz.Http requesti çevirip gönderecek.
+kubectl get pods -> podsları listeler.Ama oturma odasınadaki.Default olarak
+kubectl get pods --all-namespaces ->Diğer yerlerdeki pods ları listeler.Kubernates bir ev ise ,namespace bu evdeki odalardır.Bu komut tüm odaları listeler.
+kubectl get pods -n kube-system ->kube-system namespaceindeki(odada ki) podsları listeler.
+kubectl delete all --all --all-namespaces->tüm podsları silme
+
+Proje içinde oluşturduğumuz k8s.yaml dosyasını çalıştırmka istiyoruz.
+Öncelikle bir tane namespace oluşturalım.-->kubectl create namespace dev-> dev adında bir namespace oluşturuyoruz.Tüm deploymentları bu odaya yapacağız.
+kubectl apply -f k8s.yaml  ->k8s.yaml dosyasında ki deployment orjinalini alıp ,http payloadına çevirip gönderiyor.Deployment oluşturur.Burada k8s.yaml için de yaptığımız her değişiklikden sonra bunu uygularız ve her seferin de bir instance oluşur.
+kubectl get deploy -> Oluşturulan deployları listeler.
+
+kubectl describe pod_name ->podu inceler.
+
+k8s.yaml içine enviroment variables değişkenleri koyabiliriz.
+Burada confident datalar için bazı cüzdanlar oluşturuyoruz. Biz "youcontribute" adında bir cüzdan oluşturabiliriz.
+-->kubectl create secret generic youcontribute --from-literal=db_password=SPRING_DATASOURCE_PASSWORD=my-secret-pw  --from-literal=github_token=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  --from-literal=one_signal_api_auth_key=NjgwZGU1YjktN2FiNy00Y2QyLTkzMTEtOGRkZWU4Y2FjZTEx  --from-literal=one_signal_app_id=3c431a6d-543f-4e13-a368-44329e3fff27  
+k8s.yaml dosyasında ki enviroment altından ki secretlarla uyumlu olmalı.
+
+bu değişiklikleri yaptıktan sonra tekrar ->  kubectl apply -f k8s.yaml
+
+kubectl get secrets -> oluşturduğumuz secretları listeler.
+kubectl delete youcontribute->youcontribute secretını siler.
+
+kubectl describe deploy youcontribute -> youcontribute cüzdanının inceleyebiliriz.
+
+Intellija IDEA da kubernetes pluginini indirip, işimizi kolaylaştırabiliriz.
+
+Helm ,Kubernetes üzerinde uygulamaları kolayca yönetmenizi yarayan bir araç olarak karşımıza çıkıyor.Helm ile kolayca deploy edebilir,upgrade edebilir,sürümleri kontrol edebilirsiniz .Bir nevi kuberntesin paket yöneticisi.
+Projemizin mysql bağımlılığı var.
+Helm kurulumu : helm package mysqlchoco install kubernetes-helm
+Mysql i kuberntes ortamında global bir servis varsa kullabiliriz veya mysql i paket yöneticisinden kurabiliriz.
+Öncelikle bitnami üzerinden  ana sunucuyu ekliyoruz.->helm repo add bitnami https://charts.bitnami.com/bitnami  ->bitnami bu tarz global bağımlılıklar için fazlasıyla kullnılıyor.
+Ardından kurulum için -> helm install youcontribute bitnami/mysql --set auth.rootPassword=my-secret-pw --set auth.database=youcontribute --set volumePermissions.enabled=true  ->youcontribute adındaki bir databse i ve şifresi my-secret-pw olan bir database iinstall ececek kubernetese.Bir pod oluşacak.
+
+kubectl get svc -> Servisleri clusterları listeler.
+k8s.yaml içindende ki  db url e buradaki  "youcontribute-mysql" eklenir. ->jdbc:mysql://youcontribute-mysql.default:3306/youcontribute?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false  ->Buradaki default namespace adı
+
+
+
+Burada oluşturduğumuz 
+
+helm ls -> paketleri listeler.
+helm uninstall youcontribute -youcontribute bu helmi siler.
+
+
+https://12factor.net/->Bir uygulama geliştirirken , uyulması gerekenler.
+
+->Maven ile Gradle arasındaki temel fark -->Maven da ekstra custom bir işlemde bir plugin veya kendi pluginimizi yazmak gerek (çok zor) ve xml konfigurasyon yapılıyor.
+Gradle da ise daha flexible.Gradle da bir DSL yazıyoruz.(groovy).Mesela bir deploy diye bir plugin yazmak istiyoruz ve uygulamanın bir instansı herokuya atsın, bir instance nı Azure atsın vs .diye bir senaryo düşünelim.Gradle da bunu DSL ile çözebiliriz.
+
+->dockerda bir image ı arama -> docker images | grep image_name  -->docker images | grep youcontribute  
+->CMD : docker images | grep you
+youcontribute         v1        277b0c698dc3   2 hours ago    232MB
+
+
+docker push -t ffiruz/youcontribute:3.0.0
+
+
+
+Adımlar.
+1.docker build -t youcontribute:v1 .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
