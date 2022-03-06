@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -49,7 +50,7 @@ public  class GithubClientServiceTest {
         //Github'ın api sine gitmeden , sanki gidiyormuşuz gibi , test yapıyoruz.
         // Sanki postmanden bu datayı almışız gibi.->Burada "__files" wiremockun özel tanıdığı bir path .Bu nedenle ,withBodyFile("/github/issues.json") şeklidne kullabiliriz.
         wireMockServer.stubFor(get(urlPathEqualTo("/repos/octocat/Hello-World/issues")) //mockladık.
-                        .withQueryParam("since",equalTo("2022-02-10"))
+                        .withQueryParam("since",equalTo("2022-02-10-0-0-0"))
                         .withHeader("Authorization",equalTo("token tokenTest")) //token set ettik.
                 .willReturn(aResponse().withBodyFile("/github/issues.json") //_files/github/issues.json içerisinde ki data dönecek.
                 .withHeader("Content_Type", MediaType.APPLICATION_JSON_VALUE).withStatus(200)));
@@ -58,7 +59,7 @@ public  class GithubClientServiceTest {
 
         //when
 
-        GithubIssueResponse[] response= this.githubClient.listIssues("octocat","Hello-World", LocalDate.parse("2022-02-10"));
+        GithubIssueResponse[] response= this.githubClient.listIssues("octocat","Hello-World", LocalDateTime.of(2022,02,10,0,0,0));
 
 
         //then

@@ -1,0 +1,51 @@
+apiVersion: apps/v1  #Master node da api serverı var.Oraya bir http gibi bir ,stek gönderdiğimizi için api nin pathi
+kind: Deployment #Ne tip olduğu
+metadata:
+  name: youcontribute
+  labels:
+    app: youcontribute
+spec:
+  replicas: 1 #Bu uygulamanın kaç tane instance olacak?bunu belirtiyoruz.
+  selector:
+    matchLabels:
+      app: youcontribute
+  template:
+    metadata:
+      labels:
+        app: youcontribute
+    spec:  #Burada her bir pod için containers tagı içinde yazılır.
+      containers:
+        - name: youcontribute
+          image: ffiruz/youcontribute:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://youcontribute-mysql.default:3306/youcontribute
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD   #confidential
+              valueFrom:
+                secretKeyRef:
+                  key: db_password
+                  name: youcontribute #cüzdan adı
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: github_token
+                  name: youcontribute #cüzdan adı
+            - name: ONE_SIGNAL_API_AUTH_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: one_signal_api_auth_key
+                  name: youcontribute  #cüzdan adı
+            - name: ONE_SIGNAL_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  key: one_signal_app_id
+                  name: youcontribute #cüzdan adı
+
+
+
+
+

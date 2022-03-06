@@ -364,7 +364,10 @@ docker push -t ffiruz/youcontribute:3.0.0
 
 Adımlar.
 1.docker build -t youcontribute:v1 .
+<<<<<<< HEAD
 2.
+=======
+>>>>>>> branch1
 
 
 
