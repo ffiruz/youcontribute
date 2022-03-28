@@ -1,6 +1,8 @@
 package com.ferdi.youcontribute.service;
 
 import com.ferdi.youcontribute.config.GithubProperties;
+import com.ferdi.youcontribute.service.models.GithubAccessTokenRequest;
+import com.ferdi.youcontribute.service.models.GithubAccessTokenResponse;
 import com.ferdi.youcontribute.service.models.GithubIssueResponse;
 import com.ferdi.youcontribute.service.models.GithubPullsResponse;
 import lombok.AllArgsConstructor;
@@ -22,8 +24,6 @@ public class GithubClient { //client oluşturacağız
     public final RestTemplate restTemplate;
 
     private final GithubProperties githubProperties;
-
-
 
     public GithubIssueResponse[] listIssues(String owner, String repository, LocalDateTime since) //GithubIssueResponse tipinde bir array dönüyor.
     {
@@ -56,11 +56,31 @@ public class GithubClient { //client oluşturacağız
         String pullRequestUrl=String.format("%s/repos/%s/%s/pulls?state=closed",this.githubProperties.getApiUrl(),owner,repository);     //-->BaseUrl/repos/vmg/redcarpet/issues?since=date ->BaeUrl:application.propertys içinden set edilecek.
         //%s ile belirttiğimiz parametre de dinamik olarak gelecek alanlarımız.
 
-
         ResponseEntity<GithubPullsResponse[]> response=this.restTemplate.exchange(pullRequestUrl, HttpMethod.GET,request, GithubPullsResponse[].class); //issueUrl e , GET isteği at.Requesti de gönder.Response tipini belirt.
         return response.getBody();
     }
 
+    public String getAuthorizeURL()
+    {
+        return String.format("%s?client_id=%s",this.githubProperties.getAuthorizeUrl(),this.githubProperties.getClientId());
+        //https://github.com/login/oauth/authorize?client_id=a78ef8b0473267ff0407
+    }
+
+    public String getAccessToken(String code) //Kullanıcı bazlı bir token olacak.-> https://github.com/login/oauth/access_token adrese POST isteği atacağız.
+    {
+        GithubAccessTokenRequest githubAccessTokenRequest=GithubAccessTokenRequest.builder()
+                .clientId(this.githubProperties.getClientId())
+                .clientSecret(this.githubProperties.getClientSecret())
+                .code(code)
+                .build();
+        HttpEntity<GithubAccessTokenRequest> request = new HttpEntity<>(githubAccessTokenRequest);//Post isteğinde kullancağımız request
+        ResponseEntity<GithubAccessTokenResponse> exchange = this.restTemplate.exchange(this.githubProperties.getAccessUrl(), HttpMethod.POST, request, GithubAccessTokenResponse.class);
+        return exchange.getBody().getAccessToken();
+
+        //https://docs.github.com/en/enterprise-server@3.0/developers/apps/building-oauth-apps/authorizing-oauth-apps
+
+        //Burada verdiğimiz "code" token 10 dakikada eğer token üretrmezse expite olacak.
+    }
 
 
 }

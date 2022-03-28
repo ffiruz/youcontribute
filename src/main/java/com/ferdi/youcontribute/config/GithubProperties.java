@@ -15,8 +15,12 @@ import org.springframework.stereotype.Component;
 public  class GithubProperties { //Application properties deki ayarları , GithubProperties  objesine set etmek için bu classı kullanacağız
     private  String token;              //Token değerini set edeceğiz.
 
-
     private String apiUrl;
+
+    private String authorizeUrl;  //authorize-url bu şekilde tanıtabiliriz.
+    private String clientId;
+    private String clientSecret;
+    private  String accessUrl;
 
 
 }

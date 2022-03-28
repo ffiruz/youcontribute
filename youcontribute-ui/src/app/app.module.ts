@@ -18,17 +18,22 @@ import { RejectComponent } from './challenges/reject/reject.component';
 import { ChallengeListComponent } from './challenges/challenge-list/challenge-list.component';
 import { Challenge } from './_models/challenge';
 import { StatusComponent } from './badges/status/status.component';
+import { SigninComponent } from './auth/signin/signin.component';
+import { CallbackComponent } from './auth/callback/callback.component';
+import { GithubCallbackComponent } from './auth/github-callback/github-callback.component';
+import { PermissionService } from './_services/permission.service';
 
 
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'import', component: ImportComponent },
-  { path: 'issues/:id', component: IssueListComponent },
-  { path: 'challenges/:id/accept', component: AcceptComponent },
-  { path: 'challenges/:id/reject', component: RejectComponent },
-  { path: 'challenges', component: ChallengeListComponent },
-  { path: '',redirectTo:'home',pathMatch:'full' }
+  { path: 'home', component: HomeComponent,canActivate: [PermissionService]},
+  { path: 'import', component: ImportComponent,canActivate: [PermissionService] },
+  { path: 'issues/:id', component: IssueListComponent,canActivate: [PermissionService] },
+  { path: 'challenges/:id/accept', component: AcceptComponent,canActivate: [PermissionService] },
+  { path: 'challenges/:id/reject', component: RejectComponent,canActivate: [PermissionService] },
+  { path: 'challenges', component: ChallengeListComponent,canActivate: [PermissionService] },
+  { path: 'signin', component: SigninComponent },
+  { path: 'auth/github/callback', component: GithubCallbackComponent }
 ];
 
 @NgModule({
@@ -41,6 +46,9 @@ const routes: Routes = [
     RejectComponent,
     ChallengeListComponent,
     StatusComponent,
+    SigninComponent,
+    CallbackComponent,
+    GithubCallbackComponent,
   ],
   imports: [
     BrowserModule,
