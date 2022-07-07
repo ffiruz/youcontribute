@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)  //JSON verisinde hangi tür verilerin bulunacağını belirtmek için kullanılır
 public class ErrorResponse {
 
     private String message;
